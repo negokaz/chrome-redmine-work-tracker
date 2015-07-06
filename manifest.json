@@ -2,8 +2,12 @@
   "manifest_version": 2,
 
   "name": "Redmine Simple Time Tracker",
-  "description": "Track time while you working",
+  "description": "Track your work time",
   "version": "0.1",
+
+  "background": {
+    "scripts": ["js/background.js"]
+  },
 
   "browser_action": {
     "default_popup": "popup.html"
