@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+
+  "name": "Redmine Simple Time Tracker",
+  "description": "Track time while you working",
+  "version": "0.1",
+
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
