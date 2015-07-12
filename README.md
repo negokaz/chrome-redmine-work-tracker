@@ -1,2 +1,17 @@
-Chrome Extension - Redmine Simple Time Tracker
-===============================================
+# ![icon](icon/Stopclock_32.png) Redmine Time Tracker
+
+Redmine Time Tracker is a Chrome extension to track your work time for Redmine.
+
+Feature
+-------
+☑ Count the time
+☑ Save time entries via [Redmine REST API](http://www.redmine.org/projects/redmine/wiki/Rest_api)
+☑ Pause and stop counting the time
+□ Remind to start time tracking
+□ Support i18n (now Japanese only)
+□ Support multi-Redmine
+
+License
+-------
+Redmine Time Tracker is licensed under Apache [License version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
