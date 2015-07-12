@@ -7,7 +7,7 @@
 <dom-module id="extension-options">
   <template>
     <paper-material elevation="1" class="options-form">
-      <h1>Redmine Time Tracker</h1>
+      <h1><iron-icon class="big app-icon" src="../icon/Stopclock_128.png"></iron-icon>Redmine Time Tracker</h1>
       <iron-ajax id="redmine" auto handle-as="json" on-error="{{}}"></iron-ajax>
       <paper-input label="Redmine root URL" value="{{redmineRootUrl}}" required></paper-input>
       <paper-input label="API Access Key" value="{{apiAccessKey}}" required></paper-input>
@@ -18,10 +18,19 @@
 
   </template>
   <style>
+    .app-icon {
+      vertical-align: text-bottom;
+      margin-right: 0.2em;
+    }
+    .big {
+      --iron-icon-height: 32px;
+      --iron-icon-width: 32px;
+    }
     .options-form {
       padding: 20px;
     }
     paper-button {
+      vertical-align: middle;
       width: 8em;
       margin: 25px 0;
     }
