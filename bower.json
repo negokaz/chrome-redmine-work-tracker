@@ -2,7 +2,9 @@
   "name": "chrome-redmine-simple-time-tracker",
   "version": "0.0.0",
   "dependencies": {
+    "jquery": "jquery#2.1.4",
     "polymer": "Polymer/polymer#^1.0.0",
-    "paper-button": "PolymerElements/paper-button#^1.0.0"
+    "paper-material": "PolymerElements/paper-material#^1.0.0",
+    "paper-button": "PolymerElements/iron-elements#^1.0.0"
   }
 }

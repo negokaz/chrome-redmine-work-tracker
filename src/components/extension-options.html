@@ -1,0 +1,49 @@
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="extension-options">
+  <template>
+    <paper-material elevation="1" class="options-form">
+      <iron-ajax id="redmine" auto handle-as="json" on-error="{{}}"></iron-ajax>
+      <paper-input label="Redmine root URL" value="{{redmineRootUrl}}" required></paper-input>
+      <paper-input label="API Access Key" value="{{apiAccessKey}}" required></paper-input>
+      <paper-fab icon="done" on-click="saveOptions"></paper-fab>
+    </paper-material>
+
+  </template>
+  <style>
+    .options-form {
+      padding: 10px;
+    }
+  </style>
+  <script>
+    Polymer({
+
+      is: 'extension-options',
+
+      ready: function() {
+        this.fetchOptions();
+      },
+
+      fetchOptions: function() {
+        var self = this;
+        chrome.storage.local.get(function(data) {
+          self.redmineRootUrl = data.options.redmineRootUrl;
+          self.apiAccessKey = data.options.apiAccessKey;
+        });
+      },
+
+      saveOptions: function() {
+        chrome.storage.local.set({
+          options: {
+            redmineRootUrl: this.redmineRootUrl,
+            apiAccessKey: this.apiAccessKey
+          }
+        });
+      }
+    });
+  </script>
+</dom-module>

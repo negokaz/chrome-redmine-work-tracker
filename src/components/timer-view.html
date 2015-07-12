@@ -1,0 +1,158 @@
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="timer-view">
+
+  <style>
+    a {
+      color: #000;
+      text-decoration: none;
+    }
+    paper-item {
+      width: 300px;
+    }
+    paper-icon-button {
+      margin: 10px;
+    }
+    .issueId {
+      margin-right: 10px;
+    }
+  </style>
+
+  <template>
+    <paper-item two-line>
+      <paper-item-body hidden$="{{!isNoTask(status)}}">
+        <div>No task</div>
+      </paper-item-body>
+      <paper-item-body secondary hidden$="{{isNoTask(status)}}" two-line>
+        <iron-ajax
+            auto
+            url="{{resolveIssueJsonUrl(options, issueId)}}"
+            params={{resolveApiParams(options)}}
+            handle-as="json"
+            last-response="{{redmine}}"></iron-ajax>
+        <div>
+          <a href="{{resolveIssueLinkUrl(options, issueId)}}" target="_blank">
+            <span id="issueId">#<span>{{issueId}}</span></span>
+            <span id="issueName">{{redmine.issue.subject}}</span>
+          </a>
+        <div>
+        <div secondary>
+          <span>{{formatedSpendTime}}</span>
+          <paper-icon-button icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
+          <paper-icon-button icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
+          <paper-icon-button icon="av:stop" on-click="stopTimer"></paper-icon-button>
+        </div>
+      </paper-item-body>
+    </paper-item>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'timer-view',
+
+      properties: {
+
+        options: {
+          type: Object
+        },
+
+        issueId: {
+          type: String,
+          value: null
+        },
+
+        issueName: {
+          type: String,
+          value: ""
+        },
+        
+        status: {
+          type: String,
+          value: 'no_task'
+        },
+
+        spendMillisec: {
+          type: Number,
+          value: 0
+        }
+      },
+
+      observers: [
+        'spendMillisecUpdated(spendMillisec)'
+      ],
+
+      ready: function() {
+        this.startTimer();
+        this.applyOptions();
+      },
+
+      startTimer: function() {
+        var self = this;
+        var tickTimer = function() {
+            chrome.storage.local.get(function(data) {
+              if (data.timer) {
+                self.issueId = data.timer.issueId;
+                self.status = data.timer.status;
+                self.spendMillisec = data.timer.spendMillisec;
+                setTimeout(tickTimer, 1000);
+              }
+            });
+            self.querySelector("iron-ajax").generateRequest();
+        };
+        tickTimer();
+      },
+
+      applyOptions: function() {
+        var self = this;
+        chrome.storage.local.get(function(data) {
+          if (data.options) {
+            self.options = data.options;
+          }
+        });
+      },
+
+      spendMillisecUpdated: function(spendMillisec) {
+        var date = new Date(spendMillisec);
+        this.formatedSpendTime =
+          ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2) + ":" + ('0' + date.getUTCSeconds()).slice(-2);
+      },
+
+      resolveIssueLinkUrl: function(options, issueId) {
+        return options.redmineRootUrl + "issues/" + issueId;
+      },
+
+      resolveIssueJsonUrl: function(options, issueId) {
+        return options.redmineRootUrl + "issues/" + issueId + ".json";
+      },
+
+      resolveApiParams: function(options) {
+        return {key: options.apiAccessKey};
+      },
+
+      isNoTask: function(status) {
+        return status == 'no_task';
+      },
+
+      resumeTimer: function() {
+        chrome.runtime.sendMessage({method: "resume-timer"});
+      },
+
+      isRunning: function(status) {
+        return status == 'started';
+      },
+
+      pauseTimer: function() {
+        chrome.runtime.sendMessage({method: "pause-timer"});
+      },
+
+      stopTimer: function() {
+        chrome.runtime.sendMessage({method: "stop-timer"});
+      }
+
+    });
+  </script>
+</dom-module>
