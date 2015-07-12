@@ -10,3 +10,5 @@ cp bower_components/jquery/dist/jquery.js dist/js/
 
 vulcanize src/popup.html   --inline-script | crisper --html dist/popup.html   --js dist/popup.js
 vulcanize src/options.html --inline-script | crisper --html dist/options.html --js dist/options.js
+
+cd dist/; zip -r redmine-time-tracker.zip *
