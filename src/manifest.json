@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "Redmine Simple Time Tracker",
+  "name": "Redmine Time Tracker",
   "description": "Track your work time",
   "version": "0.1",
   "homepage_url": "https://github.com/negokaz/chrome-redmine-time-tracker",
