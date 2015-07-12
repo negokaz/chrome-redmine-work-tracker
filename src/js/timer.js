@@ -7,11 +7,13 @@ var timer = {
       if (!data.timer) {
         return;
       }
-      chrome.browserAction.setBadgeText({text: "#" + data.timer.issueId});
       switch (data.timer.status) {
         case 'started':
           return self.onTimer(data.timer.issueId);
       }
+    })
+    .then(function() {
+      self.setBadge();
     })
     .promise();
   },
@@ -38,7 +40,6 @@ var timer = {
     var self = this;
     return this.stop()
     .then(function(data) {
-      chrome.browserAction.setBadgeText({text: "#" + issueId});
       return self.onTimer(data.timer.issueId);
     })
     .then(function() {
@@ -54,6 +55,7 @@ var timer = {
   },
 
   onTimer: function(issueId) {
+    var self = this;
     var tickTimer = function() {
       return storage.get()
         .then(function(data) {
@@ -63,6 +65,9 @@ var timer = {
           }
           data.timer.spendMillisec += 1000;
           return storage.set(data);
+        })
+        .then(function(data) {
+          self.setBadge(data.timer.spendMillisec);
         })
         .then(function() {
           setTimeout(tickTimer, 1000);
@@ -74,12 +79,16 @@ var timer = {
   },
 
   pause: function() {
+    var self = this;
     return storage.get()
       .then(function(data) {
         data.timer.status = 'paused';
         return data;
       })
       .then(storage.set)
+      .then(function() {
+        self.setBadge();
+      })
       .promise();
   },
 
@@ -98,6 +107,7 @@ var timer = {
   },
 
   stop: function() {
+    var self = this;
     return this.postTime()
       .then(storage.get)
       .then(function(data) {
@@ -106,6 +116,9 @@ var timer = {
         return data;
       })
       .then(storage.set)
+      .then(function() {
+        self.setBadge();
+      })
       .promise();
   },
 
@@ -122,6 +135,17 @@ var timer = {
       });
     }
     return storage.get().then(post).promise();
+  },
+
+  setBadge: function(timeMillisec) {
+    if (timeMillisec) {
+      var date = new Date(timeMillisec);
+      var formatedSpendTime =
+        ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2);
+      chrome.browserAction.setBadgeText({text: formatedSpendTime});
+    } else {
+      chrome.browserAction.setBadgeText({text: ""});
+    }
   }
 };
 
