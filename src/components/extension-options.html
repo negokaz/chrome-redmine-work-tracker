@@ -11,9 +11,7 @@
       <iron-ajax id="redmine" auto handle-as="json" on-error="{{}}"></iron-ajax>
       <paper-input label="Redmine root URL" value="{{redmineRootUrl}}" required></paper-input>
       <paper-input label="API Access Key" value="{{apiAccessKey}}" required></paper-input>
-      <paper-button id="saveButton" icon="done" raised on-click="saveOptions">
-        <iron-icon icon="done"></iron-icon>OK
-      </paper-button>
+      <paper-button id="saveButton" icon="done" raised on-click="saveOptions"><iron-icon icon="done"></iron-icon>ok</paper-button>
     </paper-material>
 
   </template>
