@@ -12,6 +12,15 @@ if (!window.hasRedmineTimeTracker) {
     $('a.redmine-timer-start').on('click', function() {
       chrome.runtime.sendMessage({method: "start-timer", param: {issueId: issueId}});
     });
+    
+    var $startButton = $('<input type="button" class="redmine-timer-start" style="margin-left: 5px;" value="送信 (時間計測)" />');
+    var $submit = $('#issue-form > input[name=commit]');
+    $startButton.insertAfter($submit);
+    $startButton.on('click', function() {
+      chrome.runtime.sendMessage({method: "start-timer", param: {issueId: issueId}});
+      $submit.click();
+    });
+
   });
 
   function pickIssueIdFromUrl(url) {
