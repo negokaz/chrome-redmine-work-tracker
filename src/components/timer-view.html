@@ -28,7 +28,7 @@
       </paper-item-body>
       <paper-item-body secondary hidden$="{{isNoTask(status)}}" two-line>
         <iron-ajax
-            auto
+            auto$="{{!isNoTask(status)}}"
             url="{{resolveIssueJsonUrl(options, issueId)}}"
             params={{resolveApiParams(options)}}
             handle-as="json"
@@ -40,7 +40,7 @@
           </a>
         <div>
         <div secondary>
-          <span>{{formatedSpendTime}}</span>
+          <span>{{formatSpendMillisec(spendMillisec)}}</span>
           <paper-icon-button icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
           <paper-icon-button icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
           <paper-icon-button icon="av:stop" on-click="stopTimer"></paper-icon-button>
@@ -72,7 +72,7 @@
 
         status: {
           type: String,
-          value: 'no_task'
+          value: 'noTask'
         },
 
         spendMillisec: {
@@ -80,10 +80,6 @@
           value: 0
         }
       },
-
-      observers: [
-        'spendMillisecUpdated(spendMillisec)'
-      ],
 
       ready: function() {
         this.startTimer();
@@ -93,15 +89,14 @@
       startTimer: function() {
         var self = this;
         var tickTimer = function() {
-            chrome.storage.local.get(function(data) {
-              if (data.timer) {
-                self.issueId = data.timer.issueId;
-                self.status = data.timer.status;
-                self.spendMillisec = data.timer.spendMillisec;
-                setTimeout(tickTimer, 1000);
-              }
-            });
-            self.querySelector("iron-ajax").generateRequest();
+          chrome.storage.local.get(function(data) {
+            if (data.timer.status != 'noTask') {
+              self.issueId = data.timer.issueId;
+              self.status = data.timer.status;
+              self.spendMillisec = data.timer.spendMillisec;
+            }
+            setTimeout(tickTimer, 1000);
+          });
         };
         tickTimer();
       },
@@ -115,10 +110,9 @@
         });
       },
 
-      spendMillisecUpdated: function(spendMillisec) {
+      formatSpendMillisec: function(spendMillisec) {
         var date = new Date(spendMillisec);
-        this.formatedSpendTime =
-          ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2) + ":" + ('0' + date.getUTCSeconds()).slice(-2);
+        return ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2) + ":" + ('0' + date.getUTCSeconds()).slice(-2);
       },
 
       resolveIssueLinkUrl: function(options, issueId) {
@@ -134,7 +128,7 @@
       },
 
       isNoTask: function(status) {
-        return status == 'no_task';
+        return status == 'noTask';
       },
 
       resumeTimer: function() {
@@ -142,7 +136,7 @@
       },
 
       isRunning: function(status) {
-        return status == 'started';
+        return status == 'running';
       },
 
       pauseTimer: function() {
