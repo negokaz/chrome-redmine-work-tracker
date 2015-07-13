@@ -1,6 +1,6 @@
 var timer = {
 
-  restart: function() {
+  boot: function() {
     var self = this;
     storage.get()
     .then(function(data) {
@@ -22,7 +22,10 @@ var timer = {
     var self = this;
     storage.get()
     .then(function(data) {
-      if (data.timer && data.timer.issueId == issueId) {
+      if (!data.timer) {
+        self.upnew(issueId);
+      }
+      if (data.timer.issueId == issueId) {
         switch (data.timer.status) {
           case 'paused':
             return self.resume();
@@ -36,22 +39,27 @@ var timer = {
     .promise();
   },
 
+  upnew: function(issueId) {
+    return this.onTimer(issueId)
+      .then(function() {
+        return storage.set({
+          'timer': {
+            issueId: issueId,
+            status: 'started',
+            spendMillisec: 0
+          }
+        });
+      })
+      .promise();
+  },
+
   renew: function(issueId) {
     var self = this;
     return this.stop()
-    .then(function(data) {
-      return self.onTimer(data.timer.issueId);
-    })
-    .then(function() {
-      return storage.set({
-        'timer': {
-          issueId: issueId,
-          status: 'started',
-          spendMillisec: 0
-        }
-      });
-    })
-    .promise();
+      .then(function() {
+        return self.upnew();
+      })
+      .promise();
   },
 
   onTimer: function(issueId) {
@@ -149,4 +157,4 @@ var timer = {
   }
 };
 
-timer.restart();
+timer.boot();

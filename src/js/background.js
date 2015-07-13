@@ -1,23 +1,29 @@
-chrome.storage.local.get(function(options) {
-   if (options.redmineRootUrl) {
-      chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-        chrome.tabs.query({
-          url: options.redmineRootUrl + 'issues/*'
-        }, function (tabs) {
-          $.each(tabs, function(i, tab) {
-            if (tab.id == tabId) {
-              chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
-              chrome.tabs.executeScript(tabId, {file: 'js/inject-to-redmine.js'});
-            }
+function loadOption() {
+  chrome.storage.local.get(function(data) {
+     if (data.options) {
+        chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+          chrome.tabs.query({
+            url: data.options.redmineRootUrl + 'issues/*'
+          }, function (tabs) {
+            $.each(tabs, function(i, tab) {
+              if (tab.id == tabId) {
+                chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
+                chrome.tabs.executeScript(tabId, {file: 'js/inject-to-redmine.js'});
+              }
+            });
           });
         });
-      });
-   }
-});
+     }
+  });
+}
+loadOption();
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     switch(request.method) {
+      case 'load-option':
+        loadOption();
+        break;
       case 'start-timer':
         timer.start(request.param.issueId);
         break;

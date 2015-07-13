@@ -49,8 +49,10 @@
       fetchOptions: function() {
         var self = this;
         chrome.storage.local.get(function(data) {
-          self.redmineRootUrl = data.options.redmineRootUrl;
-          self.apiAccessKey = data.options.apiAccessKey;
+          if (data.options) {
+            self.redmineRootUrl = data.options.redmineRootUrl;
+            self.apiAccessKey = data.options.apiAccessKey;
+          }
         });
       },
 
@@ -60,6 +62,8 @@
             redmineRootUrl: this.redmineRootUrl,
             apiAccessKey: this.apiAccessKey
           }
+        }, function() {
+          chrome.runtime.sendMessage({method: "load-option"});
         });
       }
     });
