@@ -1,3 +1,4 @@
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
@@ -10,43 +11,41 @@
       color: #000;
       text-decoration: none;
     }
-    paper-item {
-      width: 300px;
+    #issue-box {
+      margin: 10px;
     }
-    paper-icon-button {
-      width: 24px;
-    }
-    .issueId {
-      margin-right: 10px;
+    #timer-box {
+      padding: 10px;
+      min-width: 300px;
+      border-top: solid 1px lightgray;
     }
   </style>
 
   <template>
-    <paper-item two-line>
+    <paper-item fullbreed>
       <paper-item-body hidden$="{{!isNoTask(status)}}">
         <div>No task</div>
       </paper-item-body>
-      <paper-item-body secondary hidden$="{{isNoTask(status)}}" two-line>
-        <iron-ajax
-            auto$="{{!isNoTask(status)}}"
-            url="{{resolveIssueJsonUrl(options, issueId)}}"
-            params={{resolveApiParams(options)}}
-            handle-as="json"
-            last-response="{{redmine}}"></iron-ajax>
-        <div>
+      <paper-item-body hidden$="{{isNoTask(status)}}" two-line>
+        <div id="issue-box">
           <a href="{{resolveIssueLinkUrl(options, issueId)}}" target="_blank">
             <span id="issueId">#<span>{{issueId}}</span></span>
             <span id="issueName">{{redmine.issue.subject}}</span>
           </a>
-        <div>
-        <div secondary>
+        </div>
+        <div id="timer-box" secondary>
           <span>{{formatSpendMillisec(spendMillisec)}}</span>
           <paper-icon-button icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
           <paper-icon-button icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
           <paper-icon-button icon="av:stop" on-click="stopTimer"></paper-icon-button>
         </div>
-      </paper-item-body>
     </paper-item>
+    <iron-ajax
+        auto$="{{!isNoTask(status)}}"
+        url="{{resolveIssueJsonUrl(options, issueId)}}"
+        params={{resolveApiParams(options)}}
+        handle-as="json"
+        last-response="{{redmine}}"></iron-ajax>
   </template>
 
   <script>
