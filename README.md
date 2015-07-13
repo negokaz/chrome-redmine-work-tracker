@@ -4,12 +4,14 @@ Redmine Time Tracker is a Chrome extension to track your work time for Redmine.
 
 Feature
 -------
-* ☑ Count the time
-* ☑ Save time entries via [Redmine REST API](http://www.redmine.org/projects/redmine/wiki/Rest_api)
-* ☑ Pause and stop counting the time
-* □ Remind to start time tracking
-* □ Support i18n (now Japanese only)
-* □ Support multi-Redmine
+- [x] Count the time
+- [x] Save time entries via [Redmine REST API](http://www.redmine.org/projects/redmine/wiki/Rest_api)
+- [x] Pause and stop counting the time
+- [ ] Remind to start time tracking
+- [ ] Validate options before saving
+- [ ] Support i18n (now Japanese only)
+- [ ] Support multi-Redmine
+- [ ] Set initial time on popup view
 
 Getting started
 ---------------
