@@ -177,7 +177,7 @@ var timer = {
     if (timeMillisec) {
       var date = new Date(timeMillisec);
       var formatedSpendTime =
-        ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2);
+        date.getUTCHours() + ":" + ('0' + date.getUTCMinutes()).slice(-2);
       chrome.browserAction.setBadgeText({text: formatedSpendTime});
     } else {
       chrome.browserAction.setBadgeText({text: ""});
