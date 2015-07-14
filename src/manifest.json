@@ -3,7 +3,7 @@
 
   "name": "Redmine Time Tracker",
   "description": "Track your work time",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "homepage_url": "https://github.com/negokaz/chrome-redmine-time-tracker",
 
   "permissions": [
