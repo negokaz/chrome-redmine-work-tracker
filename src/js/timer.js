@@ -50,7 +50,7 @@ var timer = {
         if (data.timer.issueId == issueId) {
           switch (data.timer.status) {
             case 'running':
-              return new $.Deferred().resolve().promise();
+              return new $.Deferred().resolve();
             case 'paused':
               return self.resume();
             case 'stopped':

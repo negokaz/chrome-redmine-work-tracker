@@ -25,18 +25,29 @@ chrome.storage.onChanged.addListener(function (changeInfo, type){
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     switch(request.method) {
+      case 'start-task':
+        task.start(request.param.issueId)
+          .then(function() { return timer.start(request.param.issueId); })
+          .fail(function() { console.log(arguments); })
+          .done(function() { sendResponse({success: true}); });
+        return true;
       case 'start-timer':
-        timer.start(request.param.issueId);
-        break;
+        timer.start(request.param.issueId)
+          .fail(function() { console.log(arguments); })
+          .done(function() { sendResponse({success: true}); });
+        return true;
       case 'pause-timer':
-        timer.pause();
-        break;
+        timer.pause()
+          .fail(function() { console.log(arguments); });
+        return;
       case 'resume-timer':
-        timer.resume();
-        break;
+        timer.resume()
+          .fail(function() { console.log(arguments); });
+        return;
       case 'stop-timer':
-        timer.stop();
-        break;
+        timer.stop()
+          .fail(function() { console.log(arguments); });
+        return;
     }
   }
 );
