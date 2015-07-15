@@ -5,6 +5,9 @@
     "jquery": "jquery#2.1.4",
     "polymer": "Polymer/polymer#^1.0.0",
     "paper-material": "PolymerElements/paper-material#^1.0.0",
-    "paper-button": "PolymerElements/iron-elements#^1.0.0"
+    "paper-button": "PolymerElements/iron-elements#^1.0.0",
+    "paper-input": "PolymerElements/paper-input#~1.0.6",
+    "paper-item": "PolymerElements/paper-item#~1.0.2",
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.3"
   }
 }
