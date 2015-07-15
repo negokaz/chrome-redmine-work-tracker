@@ -2,13 +2,11 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="extension-options">
   <template>
     <paper-material elevation="1" class="options-form">
       <h1><iron-icon class="big app-icon" src="../icon/Stopclock_128.png"></iron-icon>Redmine Time Tracker</h1>
-      <iron-ajax id="redmine" auto handle-as="json" on-error="{{}}"></iron-ajax>
       <paper-input label="Redmine root URL" value="{{redmineRootUrl}}" required></paper-input>
       <paper-input label="API Access Key" value="{{apiAccessKey}}" required></paper-input>
       <paper-button id="saveButton" icon="done" raised on-click="saveOptions"><iron-icon icon="done"></iron-icon>ok</paper-button>

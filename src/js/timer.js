@@ -101,7 +101,6 @@ var timer = {
           data.timer.spendMillisec += 1000;
           return storage.set(data)
             .then(function(data) {
-              console.log(data);
               self.setBadge(data.timer.spendMillisec);
             })
             .then(function() {
