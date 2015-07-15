@@ -1,17 +1,32 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="issue-statuses-select.html">
 
 <dom-module id="extension-options">
   <template>
     <paper-material elevation="1" class="options-form">
       <h1><iron-icon class="big app-icon" src="../icon/Stopclock_128.png"></iron-icon>Redmine Time Tracker</h1>
+      <h2>Basic infomation</h2>
       <paper-input label="Redmine root URL" value="{{redmineRootUrl}}" required></paper-input>
       <paper-input label="API Access Key" value="{{apiAccessKey}}" required></paper-input>
+      <h2>Doing status</h2>
+      <issue-statuses-select
+          redmine-root-url={{redmineRootUrl}}
+          api-access-key={{apiAccessKey}}
+          selected-status-id="{{issueStatusId}}"></issue-statuses-select>
       <paper-button id="saveButton" icon="done" raised on-click="saveOptions"><iron-icon icon="done"></iron-icon>ok</paper-button>
     </paper-material>
-
+    <iron-ajax
+        auto
+        url="{{resolveCurrentUserUrl(redmineRootUrl)}}"
+        params={{resolveApiParams(apiAccessKey)}}
+        handle-as="json"
+        last-response="{{redmine}}"></iron-ajax>
   </template>
   <style>
     .app-icon {
@@ -50,6 +65,7 @@
           if (data.options) {
             self.redmineRootUrl = data.options.redmineRootUrl;
             self.apiAccessKey = data.options.apiAccessKey;
+            self.issueStatusId = data.options.doingStatusId;
           }
         });
       },
@@ -58,10 +74,21 @@
         chrome.storage.local.set({
           options: {
             redmineRootUrl: this.redmineRootUrl,
-            apiAccessKey: this.apiAccessKey
+            apiAccessKey: this.apiAccessKey,
+            userId: this.redmine.user.id,
+            doingStatusId: this.issueStatusId
           }
         });
+      },
+
+      resolveCurrentUserUrl: function(redmineRootUrl) {
+        return redmineRootUrl + "users/current.json";
+      },
+
+      resolveApiParams: function(apiAccessKey) {
+        return {key: apiAccessKey};
       }
+
     });
   </script>
 </dom-module>

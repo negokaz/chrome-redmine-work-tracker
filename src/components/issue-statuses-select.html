@@ -1,0 +1,87 @@
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="issue-statuses-select">
+
+  <style>
+    paper-menu {
+      min-width: 100px;
+    }
+
+    paper-item {
+      padding: 0 20px;
+    }
+  </style>
+
+  <template>
+    <div class="horizontal left-justified layout">
+      <paper-menu selected={{selectedIndex}}>
+        <template is="dom-repeat" items="{{redmine.issue_statuses}}">
+          <paper-item>{{item.name}}</paper-item>
+        </template>
+      </paper-menu>
+    </div>
+    <iron-ajax
+        auto
+        url="{{resolveIssueStatusesUrl(redmineRootUrl)}}"
+        params={{resolveApiParams(apiAccessKey)}}
+        handle-as="json"
+        on-response="select"
+        last-response="{{redmine}}"></iron-ajax>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'issue-statuses-select',
+
+      properties: {
+
+        redmineRootUrl: {
+          type: String
+        },
+
+        apiAccessKey: {
+          type: String
+        },
+
+        selectedStatusId: {
+          type: Number,
+          notify: true
+        }
+      },
+
+      observers: [
+        "selected(selectedIndex)"
+      ],
+
+      resolveIssueStatusesUrl: function(redmineRootUrl) {
+        return redmineRootUrl + "issue_statuses.json";
+      },
+
+      resolveApiParams: function(apiAccessKey) {
+        return {key: apiAccessKey};
+      },
+
+      selected: function(index) {
+        this.selectedStatusId = this.redmine.issue_statuses[index].id;
+      },
+
+      select: function() {
+        if (!this.redmine) { return; }
+
+        var length = this.redmine.issue_statuses.length;
+        for (var i = 0; i < length; i++) {
+          if (this.redmine.issue_statuses[i].id == this.selectedStatusId) {
+            this.selectedIndex = i;
+            return;
+          }
+        }
+      }
+
+    });
+  </script>
+</dom-module>
