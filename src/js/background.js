@@ -8,11 +8,23 @@ function loadOption() {
             $.each(tabs, function(i, tab) {
               if (tab.id == tabId) {
                 chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
-                chrome.tabs.executeScript(tabId, {file: 'js/inject-to-redmine.js'});
+                chrome.tabs.executeScript(tabId, {file: 'js/inject-to-issue.js'});
               }
             });
           });
         });
+        chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+         chrome.tabs.query({
+           url: data.options.redmineRootUrl + '*agile/board*'
+         }, function (tabs) {
+           $.each(tabs, function(i, tab) {
+             if (tab.id == tabId) {
+               chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
+               chrome.tabs.executeScript(tabId, {file: 'js/inject-to-agileboard.js'});
+             }
+           });
+         });
+       });
      }
   });
 }
