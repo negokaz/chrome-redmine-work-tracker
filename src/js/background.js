@@ -2,6 +2,7 @@ var options = {};
 
 chrome.storage.local.get(function(data) {
     options = data.options;
+    updateContextMenu();
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
@@ -14,6 +15,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 chrome.storage.onChanged.addListener(function (changeInfo, type){
     if (type === "local" && changeInfo.options) {
         options = changeInfo.options.newValue;
+        updateContextMenu();
     }
 });
 
@@ -35,3 +37,24 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
+
+var contextMenuId = null;
+contextMenuId = chrome.contextMenus.create({
+    title: "Timer Start (Redmine Time Tracker)",
+    contexts: ["link"],
+    onclick: function (info, tab){
+        if (options && options.redmineRootUrl && info.linkUrl.match(/[/]issues[/]([0-9]+)/)) {
+            var issueId = RegExp.$1;
+            timer.start(issueId);
+        }
+    }
+});
+function updateContextMenu() {
+    if (contextMenuId && options && options.redmineRootUrl) {
+        chrome.contextMenus.update(contextMenuId, {
+            targetUrlPatterns: [
+                options.redmineRootUrl + "issues/*"
+            ]
+        });
+    }
+}

@@ -7,10 +7,12 @@
   "homepage_url": "https://github.com/negokaz/chrome-redmine-time-tracker",
 
   "permissions": [
+    "contextMenus",
     "tabs",
     "storage",
     "http://*/*",
-    "https://*/*"],
+    "https://*/*"
+  ],
 
   "icons": {
      "16": "icon/Stopclock_16.png",
