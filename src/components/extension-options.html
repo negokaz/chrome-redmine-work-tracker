@@ -62,8 +62,6 @@
             redmineRootUrl: this.redmineRootUrl,
             apiAccessKey: this.apiAccessKey
           }
-        }, function() {
-          chrome.runtime.sendMessage({method: "load-option"});
         });
       }
     });
