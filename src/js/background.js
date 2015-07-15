@@ -2,20 +2,23 @@ var options = {};
 
 chrome.storage.local.get(function(data) {
     options = data.options;
-    updateContextMenu();
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (options && options.redmineRootUrl && changeInfo.status === "complete" && tab.url.indexOf(options.redmineRootUrl + 'issues/') === 0) {
+    if (options && options.redmineRootUrl && changeInfo.status === "complete") {
+      if (tab.url.match(new RegExp("^" + options.redmineRootUrl + "issues/[0-9]+"))) {
         chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
-        chrome.tabs.executeScript(tabId, {file: 'js/inject-to-redmine.js'});
+        chrome.tabs.executeScript(tabId, {file: 'js/inject-to-issue.js'});
+      } else if (tab.url.match(new RegExp("^" + options.redmineRootUrl + ".*agile/board"))) {
+        chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
+        chrome.tabs.executeScript(tabId, {file: 'js/inject-to-agileboard.js'});
+      }
     }
 });
 
 chrome.storage.onChanged.addListener(function (changeInfo, type){
     if (type === "local" && changeInfo.options) {
         options = changeInfo.options.newValue;
-        updateContextMenu();
     }
 });
 
@@ -37,24 +40,3 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
-
-var contextMenuId = null;
-contextMenuId = chrome.contextMenus.create({
-    title: "Timer Start (Redmine Time Tracker)",
-    contexts: ["link"],
-    onclick: function (info, tab){
-        if (options && options.redmineRootUrl && info.linkUrl.match(/[/]issues[/]([0-9]+)/)) {
-            var issueId = RegExp.$1;
-            timer.start(issueId);
-        }
-    }
-});
-function updateContextMenu() {
-    if (contextMenuId && options && options.redmineRootUrl) {
-        chrome.contextMenus.update(contextMenuId, {
-            targetUrlPatterns: [
-                options.redmineRootUrl + "issues/*"
-            ]
-        });
-    }
-}
