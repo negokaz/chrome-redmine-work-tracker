@@ -8,6 +8,7 @@ Feature
 - [x] Save time entries via [Redmine REST API](http://www.redmine.org/projects/redmine/wiki/Rest_api)
 - [x] Pause and stop counting the time
 - [x] Remind to start time tracking
+- [ ] Cancel counting the time
 - [ ] Validate options before saving
 - [ ] Support i18n (now Japanese only)
 - [ ] Support multi-Redmine
