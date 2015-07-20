@@ -7,6 +7,7 @@
     "iron-ajax": "PolymerElements/iron-ajax#^1.0.0",
     "paper-material": "PolymerElements/paper-material#^1.0.0",
     "paper-button": "PolymerElements/paper-button#^1.0.0",
+    "paper-button": "PolymerElements/paper-toggle-button#^1.0.0",
     "paper-input": "PolymerElements/paper-input#^1.0.0",
     "paper-item": "PolymerElements/paper-item#^1.0.0",
     "paper-menu": "PolymerElements/paper-menu#^1.0.0",

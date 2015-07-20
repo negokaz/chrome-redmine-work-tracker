@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="issue-statuses-select.html">
@@ -19,6 +20,10 @@
           redmine-root-url={{redmineRootUrl}}
           api-access-key={{apiAccessKey}}
           selected-status-id="{{issueStatusId}}"></issue-statuses-select>
+      <h2>Reminder</h2>
+      <div>
+        <paper-toggle-button checked="{{workReminderEnabled}}"></paper-toggle-button><span>Display noisy reminder when time tracker isn't running</span>
+      </div>
       <paper-button id="saveButton" icon="done" raised on-click="saveOptions"><iron-icon icon="done"></iron-icon>ok</paper-button>
     </paper-material>
     <iron-ajax
@@ -45,6 +50,9 @@
       width: 8em;
       margin: 25px 0;
     }
+    paper-toggle-button {
+      margin-right: 10px;
+    }
     #saveButton {
       background-color: #4285f4;
       color: #ffffff;
@@ -66,6 +74,7 @@
             self.redmineRootUrl = data.options.redmineRootUrl;
             self.apiAccessKey = data.options.apiAccessKey;
             self.issueStatusId = data.options.doingStatusId;
+            self.workReminderEnabled = data.options.workReminderEnabled;
           }
         });
       },
@@ -76,7 +85,8 @@
             redmineRootUrl: this.redmineRootUrl,
             apiAccessKey: this.apiAccessKey,
             userId: this.redmine.user.id,
-            doingStatusId: this.issueStatusId
+            doingStatusId: this.issueStatusId,
+            workReminderEnabled: this.workReminderEnabled
           }
         });
       },
