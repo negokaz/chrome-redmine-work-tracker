@@ -155,16 +155,56 @@ var timer = {
       .promise();
   },
 
+  timerBeforeReset: null,
+
+  reset: function() {
+    var self = this;
+    return storage.get()
+      .then(function(data) {
+        timerBeforeReset = data.timer;
+        return storage.set({
+          'timer': {
+            issueId: data.timer.issueId,
+            status: self.status.stopped,
+            spendMillisec: 0
+          }
+        });
+      })
+      .then(function() {
+        self.setBadge();
+      })
+      .promise();
+  },
+
+  revertReset: function() {
+    var self = this;
+    return storage.set({
+        'timer': {
+          issueId: timerBeforeReset.issueId,
+          status: self.status.stopped,
+          spendMillisec: timerBeforeReset.spendMillisec
+        }
+      })
+      .then(function() {
+        self.setBadge();
+      })
+      .promise();
+  },
+
   postTime: function(onSuccess) {
     var self = this;
     return storage.get()
       .then(function(data) {
+        // 経過時間が0の場合は記録しない
+        if (data.timer.spendMillisec == 0) { return new $.Deferred().resolve(); }
+        // ミリ秒 を 時間(hour)に換算
+        var hours = data.timer.spendMillisec / (60 * 60 * 1000);
+
         return $.post(data.options.redmineRootUrl + "time_entries.json", {
           key: data.options.apiAccessKey,
           time_entry: {
             issue_id: data.timer.issueId,
-            // ミリ秒 を 時間(hour)に換算
-            hours: data.timer.spendMillisec / (60 * 60 * 1000),
+            hours: hours,
             comments: ""
           }
         });

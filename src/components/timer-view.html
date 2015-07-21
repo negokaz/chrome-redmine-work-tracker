@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 
 <dom-module id="timer-view">
 
@@ -13,6 +14,10 @@
     }
     paper-item-body {
       min-width: 300px;
+    }
+    paper-toast > paper-button {
+      color: #eeff41;
+      margin: 10px;
     }
     #issue-box {
       margin: 10px;
@@ -40,6 +45,10 @@
           <paper-icon-button icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
           <paper-icon-button icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
           <paper-icon-button icon="av:stop" on-click="stopTimer"></paper-icon-button>
+          <paper-icon-button icon="av:skip-previous" on-click="resetTimer"></paper-icon-button>
+          <paper-toast id="reset-toast" text="時間をリセットしました" duration=1500>
+            <paper-button on-click="revertResetTimer">戻す</paper-button>
+          </paper-toast>
         </div>
     </paper-item>
     <iron-ajax
@@ -146,6 +155,23 @@
 
       stopTimer: function() {
         chrome.runtime.sendMessage({method: "stop-timer"});
+      },
+
+      resetTimer: function() {
+        chrome.runtime.sendMessage({method: "reset-timer"}, function(response) {
+          if (response.success) {
+            document.querySelector("#reset-toast").show();
+          }
+        });
+      },
+
+      revertResetTimer: function() {
+        console.log("revert");
+        chrome.runtime.sendMessage({method: "revert-reset-timer"}, function(response) {
+          if (response.success) {
+            document.querySelector("#reset-toast").hide();
+          }
+        });
       }
 
     });
