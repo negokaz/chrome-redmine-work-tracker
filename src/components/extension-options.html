@@ -13,8 +13,24 @@
     <paper-material elevation="1" class="options-form">
       <h1><iron-icon class="big app-icon" src="../icon/Stopclock_128.png"></iron-icon>Redmine Time Tracker</h1>
       <h2>Basic infomation</h2>
-      <paper-input label="Redmine root URL" value="{{redmineRootUrl}}" required></paper-input>
-      <paper-input label="API Access Key" value="{{apiAccessKey}}" required></paper-input>
+      <paper-input
+        id="root-url"
+        label="Redmine root URL"
+        value="{{redmineRootUrl}}"
+        auto-validate
+        required
+        iron-input-validate="validateBasicInfo"
+        invalid
+        error-message=""></paper-input>
+      <paper-input
+        id="api-key"
+        label="API Access Key"
+        value="{{apiAccessKey}}"
+        auto-validate
+        required
+        iron-input-validate="validateBasicInfo"
+        invalid
+        error-message=""></paper-input>
       <h2>Doing status</h2>
       <issue-statuses-select
           redmine-root-url={{redmineRootUrl}}
@@ -89,6 +105,13 @@
             workReminderEnabled: this.workReminderEnabled
           }
         });
+      },
+
+      validateBasicInfo: function() {
+        var rootUrl = document.querySelector("#root-url");
+        var apiKey  = document.querySelector("#api-key");
+
+
       },
 
       resolveCurrentUserUrl: function(redmineRootUrl) {
