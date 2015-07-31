@@ -1,0 +1,4 @@
+{
+  "cmd": "./build.sh",
+  "sh": true
+}
