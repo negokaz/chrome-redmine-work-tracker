@@ -3,7 +3,7 @@ $(function() {
 
   function enableWorkReminder() {
     // top-menuの前に追加してしまうと、↓スクロールしたときにヘッダに隠れてしまうのでbodyの最後に追加する
-    var $reminderTag = $("<span style='width:100%;height:1.8em;text-align:center;padding-top:2px;background:red;color:white;position:fixed;top:0;'>Time tracker isn't running.</span>").hide();
+    var $reminderTag = $("<span style='width:100%;height:1.8em;text-align:center;padding-top:2px;background:red;color:white;position:fixed;top:0;'>実施中のタスクがありません</span>").hide();
     $reminderTag.appendTo('body');
     // top-menuが隠れてしまわないように
     var $marginTag = $("<div style='height:1.8em;'></div>").hide();
