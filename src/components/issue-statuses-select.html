@@ -2,7 +2,12 @@
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+ <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <dom-module id="issue-statuses-select">
 
@@ -11,25 +16,45 @@
       min-width: 100px;
     }
 
-    paper-item {
-      padding: 0 20px;
+    paper-item:hover {
+      background-color: var(--divider-color);
+    }
+
+    .dropdown-trigger {
+      min-width: 100px;
+      display: inline-flex;
+      @apply(--layout-horizontal);
+      @apply(--layout-justified);
+      cursor: pointer;
+      color: var(--secondary-text-color);
+      border-bottom: 1px solid var(--secondary-text-color);
+    }
+
+    .dropdown-icon {
+      color: var(--secondary-text-color);
     }
   </style>
 
   <template>
     <div class="horizontal left-justified layout">
-      <paper-menu selected={{selectedIndex}}>
-        <template is="dom-repeat" items="{{redmine.issue_statuses}}">
-          <paper-item>{{item.name}}</paper-item>
-        </template>
-      </paper-menu>
+      <paper-menu-button>
+        <div id="selected-status-name" class="dropdown-trigger">
+          <div>{{selectedStatusName}}</div>
+          <iron-icon class="dropdown-icon" icon="arrow-drop-down"></iron-icon>
+        </div>
+        <paper-menu selected={{selectedIndex}} class="dropdown-content" >
+          <template is="dom-repeat" items="{{redmine.issue_statuses}}">
+            <paper-item class="dropdown-content">{{item.name}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-menu-button>
     </div>
     <iron-ajax
         auto
-        url="{{resolveIssueStatusesUrl(redmineRootUrl)}}"
-        params={{resolveApiParams(apiAccessKey)}}
+        url="{{_resolveIssueStatusesUrl(redmineRootUrl)}}"
+        params={{_resolveApiParams(apiAccessKey)}}
         handle-as="json"
-        on-response="select"
+        on-response="_select"
         last-response="{{redmine}}"></iron-ajax>
   </template>
 
@@ -51,26 +76,40 @@
         selectedStatusId: {
           type: Number,
           notify: true
+        },
+
+        selectedStatusName: {
+          type: String,
+          notify: true
+        },
+
+        empty: {
+          type: String
         }
       },
 
       observers: [
-        "selected(selectedIndex)"
+        "_selected(selectedIndex)"
       ],
 
-      resolveIssueStatusesUrl: function(redmineRootUrl) {
+      ready: function() {
+        this.selectedStatusName = this.empty;
+      },
+
+      _resolveIssueStatusesUrl: function(redmineRootUrl) {
         return redmineRootUrl + "issue_statuses.json";
       },
 
-      resolveApiParams: function(apiAccessKey) {
+      _resolveApiParams: function(apiAccessKey) {
         return {key: apiAccessKey};
       },
 
-      selected: function(index) {
+      _selected: function(index) {
         this.selectedStatusId = this.redmine.issue_statuses[index].id;
+        this.selectedStatusName = this.redmine.issue_statuses[index].name;
       },
 
-      select: function() {
+      _select: function() {
         if (!this.redmine) { return; }
 
         var length = this.redmine.issue_statuses.length;
@@ -81,7 +120,6 @@
           }
         }
       }
-
     });
   </script>
 </dom-module>

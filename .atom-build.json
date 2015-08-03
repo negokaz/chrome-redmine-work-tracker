@@ -1,4 +1,5 @@
 {
   "cmd": "./build.sh",
-  "sh": true
+  "sh": true,
+  "errorMatch": "^Error: Error parsing script in (?<file>[^\\.]+.html) at (?<line>\\d+):(?<col>\\d+)"
 }

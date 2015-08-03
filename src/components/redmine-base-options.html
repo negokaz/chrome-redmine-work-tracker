@@ -1,0 +1,124 @@
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+
+<dom-module id="redmine-base-options">
+
+  <template>
+    <paper-input
+      id="root-url"
+      label=[[urlLabel]]
+      value="{{url}}"
+      required></paper-input>
+    <paper-input
+      id="api-key"
+      label="[[apiKeyLabel]]"
+      value="{{apiKey}}"
+      required></paper-input>
+    <iron-ajax
+      id="ajax"
+      url="{{_resolveCurrentUserUrl(url)}}"
+      params={{_resolveApiParams(apiKey)}}
+      handle-as="json"
+      last-response="{{redmineResponse}}"
+      on-request="_startRequest"
+      on-response="_validateApiAccessibility"
+      on-error="_markInvalid"></iron-ajax>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'redmine-base-options',
+
+      properties: {
+
+        url: {
+          type: String,
+          notify: true
+        },
+
+        apiKey: {
+          type: String,
+          notify: true
+        },
+
+        userId: {
+          type: String,
+          notify: true
+        },
+
+        validating: {
+          type: Boolean,
+          notify: true
+        },
+
+        validated: {
+          type: Boolean,
+          notify: true
+        },
+
+        valid: {
+          type: Boolean,
+          notify: true
+        },
+
+        urlLabel: String,
+
+        apiKeyLabel: String
+      },
+
+      observers: [
+        "_validateBasicInfo(url, apiKey)"
+      ],
+
+      _validateBasicInfo: function(url, apiKey) {
+        if (url && url !== "" && apiKey && apiKey !== "") {
+          this.$['ajax'].generateRequest();
+        }
+      },
+
+
+      _startRequest: function() {
+        this.validated  = true;
+        this.validating = true;
+      },
+
+      _validateApiAccessibility: function() {
+        if (this.redmineResponse
+            && this.redmineResponse.user
+            && this.redmineResponse.user.id && this.redmineResponse.user.id !== "") {
+
+          this.userId = this.redmineResponse.user.id;
+          this._markValid();
+
+        } else {
+          this._markInvalid();
+        }
+        this.validating = false;
+      },
+
+      _markInvalid: function() {
+        this.valid = false;
+        this.$['root-url'].invalid = true;
+        this.$['api-key'].invalid  = true;
+      },
+
+      _markValid: function() {
+        this.valid = true;
+        this.$['root-url'].invalid = false;
+        this.$['api-key'].invalid  = false;
+      },
+
+      _resolveApiParams: function(apiAccessKey) {
+        return {key: apiAccessKey};
+      },
+
+      _resolveCurrentUserUrl: function(redmineRootUrl) {
+        return redmineRootUrl + "users/current.json";
+      }
+
+    });
+  </script>
+</dom-module>

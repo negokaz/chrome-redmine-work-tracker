@@ -3,123 +3,179 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="issue-statuses-select.html">
+<link rel="import" href="redmine-base-options.html">
 
 <dom-module id="extension-options">
-  <template>
-    <paper-material elevation="1" class="options-form">
-      <h1><iron-icon class="big app-icon" src="../icon/Stopclock_128.png"></iron-icon>Redmine Time Tracker</h1>
-      <h2>Basic infomation</h2>
-      <paper-input
-        id="root-url"
-        label="Redmine root URL"
-        value="{{redmineRootUrl}}"
-        auto-validate
-        required
-        iron-input-validate="validateBasicInfo"
-        invalid
-        error-message=""></paper-input>
-      <paper-input
-        id="api-key"
-        label="API Access Key"
-        value="{{apiAccessKey}}"
-        auto-validate
-        required
-        iron-input-validate="validateBasicInfo"
-        invalid
-        error-message=""></paper-input>
-      <h2>Doing status</h2>
-      <issue-statuses-select
-          redmine-root-url={{redmineRootUrl}}
-          api-access-key={{apiAccessKey}}
-          selected-status-id="{{issueStatusId}}"></issue-statuses-select>
-      <h2>Reminder</h2>
-      <div>
-        <paper-toggle-button checked="{{workReminderEnabled}}"></paper-toggle-button><span>Display noisy reminder when time tracker isn't running</span>
-      </div>
-      <paper-button id="saveButton" icon="done" raised on-click="saveOptions"><iron-icon icon="done"></iron-icon>ok</paper-button>
-    </paper-material>
-    <iron-ajax
-        auto
-        url="{{resolveCurrentUserUrl(redmineRootUrl)}}"
-        params={{resolveApiParams(apiAccessKey)}}
-        handle-as="json"
-        last-response="{{redmine}}"></iron-ajax>
-  </template>
+
   <style>
+
+    :host {
+      color: var(--primary-text-color:);
+    }
+
+    .description {
+      color: var(--secondary-text-color);
+    }
+
+    .message {
+      color: var(--secondary-text-color);
+    }
+
+    .message > span {
+      margin-left: 0.5em;
+    }
+
+    .success > iron-icon {
+      color: var(--paper-green-500);
+    }
+
+    .error {
+      color: var(--paper-red-500);
+    }
+
     .app-icon {
       vertical-align: text-bottom;
       margin-right: 0.2em;
     }
+
     .big {
       --iron-icon-height: 32px;
       --iron-icon-width: 32px;
     }
+
     .options-form {
       padding: 20px;
     }
+
     paper-button {
       vertical-align: middle;
       width: 8em;
       margin: 25px 0;
     }
+
+    paper-button[raised] {
+      background: #4285f4;
+      color: #fff;
+    }
+
     paper-toggle-button {
       margin-right: 10px;
     }
-    #saveButton {
-      background-color: #4285f4;
-      color: #ffffff;
+
+    paper-spinner {
+      height: 20px;
+      width: 20px;
     }
   </style>
+
+  <template>
+    <paper-material elevation="1" class="options-form">
+      <h1><iron-icon class="big app-icon" src="../icon/Stopclock_128.png"></iron-icon>Redmine Time Tracker</h1>
+      <h2>接続設定</h2>
+      <p class="description">
+        <span id="base-discription">この拡張機能を有効にするRedmineへの接続情報を設定してください</span>
+        <paper-spinner id="base-processing" alt="接続情報を確認しています" active$={{baseIsValidating}}></paper-spinner>
+        <span id="base-success" class="success message" hidden>
+          <iron-icon icon="check"></iron-icon>
+          <span>OK</span>
+        </span>
+        <span id="base-error" class="error message" hidden>
+          <iron-icon icon="report-problem"></iron-icon>
+          <span>接続情報が正しいか確認してください</span>
+        </span>
+      </p>
+      <redmine-base-options
+        id="base"
+        url-label="Redmine root URL"
+        api-key-label="API access key"
+        url={{redmineRootUrl}}
+        api-key="{{apiAccessKey}}"
+        user-id="{{userId}}"
+        validating="{{baseIsValidating}}"
+        validated="{{baseIsValidated}}"
+        valid="{{baseIsValid}}"></redmine-base-options>
+      <iron-collapse id="attribute">
+        <h2>実施中ステータス</h2>
+        <p class="description">タスクを始めるときに設定するステータスを選択してください</p>
+        <issue-statuses-select
+          redmine-root-url={{redmineRootUrl}}
+          api-access-key={{apiAccessKey}}
+          selected-status-id="{{issueStatusId}}"
+          empty="選択してください"></issue-statuses-select>
+        <h2>リマインダ</h2>
+        <div>
+          <paper-toggle-button checked="{{workReminderEnabled}}"></paper-toggle-button>
+          <span class="description">タイマーが起動していないときRedmineのページに目立つ警告を表示する</span>
+        </div>
+      </iron-collapse>
+      <paper-button id="saveButton" icon="done" disabled on-click="_saveOptions">
+        <iron-icon icon="done"></iron-icon><span>保存</span>
+      </paper-button>
+    </paper-material>
+  </template>
   <script>
     Polymer({
 
       is: 'extension-options',
 
+      observers: [
+        "_notifyBaseValidation(baseIsValidating, baseIsValidated, baseIsValid)",
+        "_toggleAttribute(baseIsValid)",
+        "_toggleSaveButton(baseIsValid, issueStatusId)"
+      ],
+
       ready: function() {
-        this.fetchOptions();
+        this._fetchOptions();
+        this.baseIsValidating = false;
+        this.baseIsValidated = false;
       },
 
-      fetchOptions: function() {
+      _notifyBaseValidation: function(baseIsValidating, baseIsValidated, baseIsValid) {
+        if (baseIsValidated && !baseIsValidating) {
+          this.$['base-success'].hidden = !baseIsValid;
+          this.$['base-error'].hidden   = baseIsValid;
+        }
+      },
+
+      _toggleAttribute: function(baseIsValid) {
+        this.$['attribute'].opened = baseIsValid;
+      },
+
+      _fetchOptions: function() {
         var self = this;
         chrome.storage.local.get(function(data) {
           if (data.options) {
             self.redmineRootUrl = data.options.redmineRootUrl;
             self.apiAccessKey = data.options.apiAccessKey;
+            self.userId = data.options.userId;
             self.issueStatusId = data.options.doingStatusId;
             self.workReminderEnabled = data.options.workReminderEnabled;
           }
         });
       },
 
-      saveOptions: function() {
+      _saveOptions: function() {
         chrome.storage.local.set({
           options: {
             redmineRootUrl: this.redmineRootUrl,
             apiAccessKey: this.apiAccessKey,
-            userId: this.redmine.user.id,
+            userId: this.userId,
             doingStatusId: this.issueStatusId,
             workReminderEnabled: this.workReminderEnabled
           }
         });
       },
 
-      validateBasicInfo: function() {
-        var rootUrl = document.querySelector("#root-url");
-        var apiKey  = document.querySelector("#api-key");
-
-
-      },
-
-      resolveCurrentUserUrl: function(redmineRootUrl) {
-        return redmineRootUrl + "users/current.json";
-      },
-
-      resolveApiParams: function(apiAccessKey) {
-        return {key: apiAccessKey};
+      _toggleSaveButton: function(baseIsValid, issueStatusId) {
+        var settingIsComplete = baseIsValid && issueStatusId && issueStatusId !== "";
+        this.$['saveButton'].disabled = !settingIsComplete;
+        this.$['saveButton'].raised = settingIsComplete;
       }
 
     });
