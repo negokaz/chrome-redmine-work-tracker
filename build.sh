@@ -11,4 +11,4 @@ mkdir -p dist/js \
 && vulcanize src/popup.html   --inline-script --inline-css | crisper --html dist/popup.html   --js dist/popup.js \
 && vulcanize src/options.html --inline-script --inline-css | crisper --html dist/options.html --js dist/options.js \
 \
-&& cd dist/ && zip -r redmine-time-tracker.zip *
+&& cd dist/ && zip -r redmine-work-tracker.zip *
