@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Redmine Time Tracker",
-  "description": "Track your work time",
+  "name": "Redmine Work Tracker",
+  "description": "Track your work",
   "version": "0.1.7",
   "homepage_url": "https://github.com/negokaz/chrome-redmine-time-tracker",
 
@@ -16,6 +16,7 @@
   "icons": {
      "16": "icon/Stopclock_16.png",
      "32": "icon/Stopclock_32.png",
+     "48": "icon/Stopclock_48.png",
     "128": "icon/Stopclock_128.png"
   },
 

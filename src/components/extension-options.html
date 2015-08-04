@@ -28,7 +28,7 @@
     }
 
     .message > span {
-      margin-left: 0.5em;
+      margin-left: 0.25em;
     }
 
     .success > iron-icon {
@@ -76,7 +76,7 @@
 
   <template>
     <paper-material elevation="1" class="options-form">
-      <h1><iron-icon class="big app-icon" src="../icon/Stopclock_128.png"></iron-icon>Redmine Time Tracker</h1>
+      <h1><iron-icon class="big app-icon" src="../icon/Stopclock_128.png"></iron-icon>Redmine Work Tracker</h1>
       <h2>接続設定</h2>
       <p class="description">
         <span id="base-discription">この拡張機能を有効にするRedmineへの接続情報を設定してください</span>
@@ -111,7 +111,7 @@
         <h2>リマインダ</h2>
         <div>
           <paper-toggle-button checked="{{workReminderEnabled}}"></paper-toggle-button>
-          <span class="description">タイマーが起動していないときRedmineのページに目立つ警告を表示する</span>
+          <span class="description">タスクを実施していないときRedmineのページに目立つ警告を表示する</span>
         </div>
       </iron-collapse>
       <paper-button id="saveButton" icon="done" disabled on-click="_saveOptions">

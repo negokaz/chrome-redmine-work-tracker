@@ -1,6 +1,6 @@
-# ![icon](icon/Stopclock_32.png) Redmine Time Tracker
+# ![icon](icon/Stopclock_32.png) Redmine Work Tracker
 
-Redmine Time Tracker is a Chrome extension to track your work time for Redmine.
+Redmine Work Tracker is a Chrome extension to track your work for Redmine.
 
 Feature
 -------
@@ -9,7 +9,7 @@ Feature
 - [x] Pause and stop counting the time
 - [x] Remind to start time tracking
 - [x] Cancel counting the time
-- [ ] Validate options before saving
+- [x] Validate options before saving
 - [ ] Support i18n (now Japanese only)
 - [ ] Support multi-Redmine
 - [ ] Set initial time on popup view

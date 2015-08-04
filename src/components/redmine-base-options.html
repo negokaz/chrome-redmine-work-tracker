@@ -21,10 +21,11 @@
       url="{{_resolveCurrentUserUrl(url)}}"
       params={{_resolveApiParams(apiKey)}}
       handle-as="json"
-      last-response="{{redmineResponse}}"
       on-request="_startRequest"
       on-response="_validateApiAccessibility"
-      on-error="_markInvalid"></iron-ajax>
+      last-response="{{redmineResponse}}"
+      on-error="_validateApiAccessibility"
+      last-error="{{redmineResponse}}"></iron-ajax>
   </template>
 
   <script>
