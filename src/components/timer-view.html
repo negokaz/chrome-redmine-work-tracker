@@ -1,30 +1,52 @@
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
 
 <dom-module id="timer-view">
 
   <style>
+
     a {
-      color: #000;
+      color: var(--primary-text-color);
       text-decoration: none;
     }
+
     paper-item-body {
       min-width: 300px;
     }
+
     paper-toast > paper-button {
-      color: #eeff41;
+      color: var(--paper-lime-a200);
       margin: 10px;
     }
+
+
+    #spend-time {
+      color: var(--secondary-text-color);
+    }
+
     #issue-box {
       margin: 10px;
     }
+
+    #issue-box > #issueId {
+      color: var(--secondary-text-color);
+    }
+
     #timer-box {
+      display: inline-flex;
+      @apply(--layout-horizontal);
+      @apply(--layout-justified);
+      @apply(--layout-center);
       padding: 10px;
-      border-top: solid 1px lightgray;
+      border-top: solid 1px var(--divider-color);
+    }
+
+    #timer-box > paper-icon-button {
+      color: var(--primary-text-color);
     }
   </style>
 
@@ -35,13 +57,13 @@
       </paper-item-body>
       <paper-item-body hidden$="{{isNoTask(status)}}" two-line>
         <div id="issue-box">
+          <span id="issueId">#<span>{{issueId}}</span></span>
           <a href="{{resolveIssueLinkUrl(options, issueId)}}" target="_blank">
-            <span id="issueId">#<span>{{issueId}}</span></span>
             <span id="issueName">{{redmine.issue.subject}}</span>
           </a>
         </div>
         <div id="timer-box" secondary>
-          <span>{{formatSpendMillisec(spendMillisec)}}</span>
+          <span id="spend-time">{{formatSpendMillisec(spendMillisec)}}</span>
           <paper-icon-button icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
           <paper-icon-button icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
           <paper-icon-button icon="av:stop" on-click="stopTimer"></paper-icon-button>
