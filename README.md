@@ -10,6 +10,7 @@ Feature
 - [x] Remind to start time tracking
 - [x] Cancel counting the time
 - [x] Validate options before saving
+- [ ] Start task via issue context menu
 - [ ] Support i18n (now Japanese only)
 - [ ] Support multi-Redmine
 - [ ] Set initial time on popup view
