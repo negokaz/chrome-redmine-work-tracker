@@ -22,4 +22,5 @@ Getting started
 License
 -------
 Copyright (c) 2015 Kazuki Negoro
+
 Redmine Time Tracker is released under the [MIT License](https://github.com/negokaz/chrome-redmine-time-tracker/blob/master/LICENSE)
