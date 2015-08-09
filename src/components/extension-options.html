@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="issue-statuses-select.html">
 <link rel="import" href="redmine-base-options.html">
 
@@ -117,6 +118,7 @@
       <paper-button id="saveButton" icon="done" disabled on-click="_saveOptions">
         <iron-icon icon="done"></iron-icon><span>保存</span>
       </paper-button>
+      <paper-toast id="saved-toast" text="保存しました"></paper-toast>
     </paper-material>
   </template>
   <script>
@@ -161,14 +163,17 @@
       },
 
       _saveOptions: function() {
+        var self = this;
         chrome.storage.local.set({
           options: {
-            redmineRootUrl: this.redmineRootUrl,
-            apiAccessKey: this.apiAccessKey,
-            userId: this.userId,
-            doingStatusId: this.issueStatusId,
-            workReminderEnabled: this.workReminderEnabled
+            redmineRootUrl: self.redmineRootUrl,
+            apiAccessKey: self.apiAccessKey,
+            userId: self.userId,
+            doingStatusId: self.issueStatusId,
+            workReminderEnabled: self.workReminderEnabled
           }
+        }, function() {
+          self.$['saved-toast'].show();
         });
       },
 
