@@ -21,4 +21,5 @@ Getting started
 
 License
 -------
-Redmine Time Tracker is licensed under Apache [License version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+Copyright (c) 2015 Kazuki Negoro
+Redmine Time Tracker is released under the [MIT License](https://github.com/negokaz/chrome-redmine-time-tracker/blob/master/LICENSE)
