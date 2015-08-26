@@ -1,6 +1,11 @@
 $(function() {
     'use strict';
 
+    if($(".redmine-timer-start").size() > 0) {
+      // 既にボタンがある場合は以降の処理をしない
+      return;
+    }
+
     var issueId = pickIssueIdFromUrl(window.location.pathname);
     var $startTag = $('<a class="icon icon-test redmine-timer-start" style="padding-right: 3px;" href="javascript:void(0)">実施</a>');
 

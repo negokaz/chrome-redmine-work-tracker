@@ -155,13 +155,33 @@ var timer = {
       .promise();
   },
 
-  timerBeforeReset: null,
+  timerBeforeModify: null,
+
+  rewind: function(minutes) {
+    var self = this;
+    return storage.get()
+      .then(function(data) {
+        timerBeforeModify = data.timer;
+        var newSpendMinutes = data.timer.spendMillisec - (new Date(0).setMinutes(minutes));
+        return storage.set({
+          'timer': {
+            issueId: data.timer.issueId,
+            status: self.status.stopped,
+            spendMillisec: (newSpendMinutes > 0) ? newSpendMinutes : 0
+          }
+        });
+      })
+      .then(function() {
+        self.setBadge();
+      })
+      .promise();
+  },
 
   reset: function() {
     var self = this;
     return storage.get()
       .then(function(data) {
-        timerBeforeReset = data.timer;
+        timerBeforeModify = data.timer;
         return storage.set({
           'timer': {
             issueId: data.timer.issueId,
@@ -180,9 +200,9 @@ var timer = {
     var self = this;
     return storage.set({
         'timer': {
-          issueId: timerBeforeReset.issueId,
+          issueId: timerBeforeModify.issueId,
           status: self.status.stopped,
-          spendMillisec: timerBeforeReset.spendMillisec
+          spendMillisec: timerBeforeModify.spendMillisec
         }
       })
       .then(function() {

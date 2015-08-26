@@ -1,9 +1,13 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 
 <dom-module id="timer-view">
 
@@ -14,15 +18,34 @@
       text-decoration: none;
     }
 
+    paper-button {
+      cursor: pointer;
+    }
+
+    paper-tooltip /deep/ #tooltip {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .dropdown-content paper-item {
+      cursor: pointer;
+      font-size: 0.5em;
+      min-height: 0;
+    }
+
+    .dropdown-content paper-item:hover {
+      background-color: var(--divider-color);
+    }
+
     paper-item-body {
       min-width: 300px;
+      padding: 10px 0;
     }
 
     paper-toast > paper-button {
       color: var(--paper-lime-a200);
       margin: 10px;
     }
-
 
     #spend-time {
       color: var(--secondary-text-color);
@@ -41,13 +64,14 @@
       @apply(--layout-horizontal);
       @apply(--layout-justified);
       @apply(--layout-center);
-      padding: 10px;
+      padding: 5px 10px 10px 10px;
       border-top: solid 1px var(--divider-color);
     }
 
     #timer-box > paper-icon-button {
       color: var(--primary-text-color);
     }
+
   </style>
 
   <template>
@@ -64,11 +88,22 @@
         </div>
         <div id="timer-box" secondary>
           <span id="spend-time">{{formatSpendMillisec(spendMillisec)}}</span>
-          <paper-icon-button icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
-          <paper-icon-button icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
-          <paper-icon-button icon="av:stop" on-click="stopTimer"></paper-icon-button>
-          <paper-icon-button icon="av:skip-previous" on-click="resetTimer"></paper-icon-button>
-          <paper-toast id="reset-toast" text="時間をリセットしました" duration=1500>
+          <paper-icon-button id="resume-btn" icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
+          <paper-tooltip for="resume-btn" margin-top="0">再開</paper-tooltip>
+          <paper-icon-button id="pause-btn" icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
+          <paper-tooltip for="pause-btn" margin-top="0">一時停止</paper-tooltip>
+          <paper-icon-button id="stop-btn" icon="av:stop" on-click="stopTimer"></paper-icon-button>
+          <paper-tooltip for="stop-btn" margin-top="0">停止(作業時間を記録)</paper-tooltip>
+          <paper-menu-button id="rewind-menu" vertical-align="bottom">
+            <paper-icon-button id="rewind-btn" icon="restore" class="dropdown-trigger"></paper-icon-button>
+            <div class="dropdown-content">
+              <paper-item on-click="rewindTimerHalfHour">30分</paper-item>
+              <paper-item on-click="rewindTimerOneHour">1時間</paper-item>
+              <paper-item on-click="resetTimer">リセット</paper-item>
+            </div>
+          </paper-menu-button>
+          <paper-tooltip for="rewind-btn" margin-top="0">時間を戻す</paper-tooltip>
+          <paper-toast id="modify-toast" duration=2000>
             <paper-button on-click="revertResetTimer">戻す</paper-button>
           </paper-toast>
         </div>
@@ -179,19 +214,41 @@
         chrome.runtime.sendMessage({method: "stop-timer"});
       },
 
+      rewindTimerHalfHour: function() {
+        this.rewindTimer(30, '時間を30分戻しました');
+      },
+
+      rewindTimerOneHour: function() {
+        this.rewindTimer(60, '時間を1時間戻しました');
+      },
+
+      rewindTimer: function(minutes, message) {
+        var self = this;
+        chrome.runtime.sendMessage({method: "rewind-timer", param: { minutes: minutes } }, function(response) {
+          if (response.success) {
+            self.$["modify-toast"].text = message;
+            self.$["modify-toast"].show();
+            self.$["rewind-menu"].close();
+          }
+        });
+      },
+
       resetTimer: function() {
+        var self = this;
         chrome.runtime.sendMessage({method: "reset-timer"}, function(response) {
           if (response.success) {
-            document.querySelector("#reset-toast").show();
+            self.$["modify-toast"].text = "時間をリセットしました";
+            self.$["modify-toast"].show();
+            self.$["rewind-menu"].close();
           }
         });
       },
 
       revertResetTimer: function() {
-        console.log("revert");
+        var self = this;
         chrome.runtime.sendMessage({method: "revert-reset-timer"}, function(response) {
           if (response.success) {
-            document.querySelector("#reset-toast").hide();
+            self.$["modify-toast"].hide();
           }
         });
       }

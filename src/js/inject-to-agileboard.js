@@ -1,6 +1,11 @@
 $(function() {
   'use strict';
 
+  if($(".redmine-timer-start").size() > 0) {
+    // 既にボタンがある場合は以降の処理をしない
+    return;
+  }
+
   var $startTag = $('<p class="time-tracker" style="text-align:right;"><a class="icon icon-test redmine-timer-start" style="color:#888;" href="javascript:void(0)">Do</a></p>');
 
   $startTag.appendTo('.issue-card > .fields');

@@ -83,6 +83,11 @@ chrome.runtime.onMessage.addListener(
           .fail(function() { console.log(arguments); })
           .done(function() { timerStateUpdated(); });
         return;
+      case 'rewind-timer':
+        timer.rewind(request.param.minutes)
+          .fail(function() { console.log(arguments); })
+          .done(function() { sendResponse({success: true}); timerStateUpdated(); });
+        return true;
       case 'reset-timer':
         timer.reset()
           .fail(function() { console.log(arguments); })

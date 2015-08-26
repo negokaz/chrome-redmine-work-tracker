@@ -15,6 +15,7 @@
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.0.0",
     "paper-input": "PolymerElements/paper-input#^1.0.0",
     "paper-item": "PolymerElements/paper-item#^1.0.0",
+    "paper-tooltip": "PolymerElements/paper-tooltip#^1.0.0",
     "paper-menu": "PolymerElements/paper-menu#^1.0.0",
     "paper-icon-button": "PolymerElements/paper-icon-button#^1.0.0"
   }
