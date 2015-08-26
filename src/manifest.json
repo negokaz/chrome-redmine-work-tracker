@@ -3,8 +3,8 @@
 
   "name": "Redmine Work Tracker",
   "description": "Redmineで簡単に精度の高い作業時間の記録ができるようになります",
-  "version": "0.2.4",
-  "homepage_url": "https://github.com/negokaz/chrome-redmine-time-tracker/blob/master/manual.md",
+  "version": "0.2.5",
+  "homepage_url": "https://github.com/negokaz/chrome-redmine-work-tracker/blob/master/manual.md",
 
   "permissions": [
     "tabs",
