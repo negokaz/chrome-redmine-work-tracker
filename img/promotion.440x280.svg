@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="440"
+   height="280"
+   id="svg5814"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   viewBox="0 0 440 280"
+   sodipodi:docname="promotion.440x280.svg"
+   inkscape:export-filename="/Users/kazuki/workspace/chrome-redmine-simple-timetracker/img/promotion.440x280.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs5816" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.1"
+     inkscape:cx="144.72139"
+     inkscape:cy="226.10472"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:window-width="1436"
+     inkscape:window-height="855"
+     inkscape:window-x="4"
+     inkscape:window-y="1"
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-nodes="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4233" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5819">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(0,-488)">
+    <rect
+       style="opacity:1;fill:#fafafa;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4147"
+       width="440"
+       height="280"
+       x="0"
+       y="488"
+       ry="2.5137999" />
+    <g
+       id="g4219"
+       transform="matrix(2.54441,0,0,2.54441,12.331611,535.50277)">
+      <circle
+         r="27.79661"
+         cy="36.067795"
+         cx="32.542374"
+         id="path4139"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:17.10000038;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <circle
+         r="27.448086"
+         cy="36.145134"
+         cx="32.446594"
+         id="path4143"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:17.10000038;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <g
+         id="g3"
+         style="fill:#9c0000;fill-opacity:1"
+         transform="matrix(1.3124726,0,0,1.3124726,-9.5204407,-9.6941942)">
+        <path
+           d="m 28.641,12.411 6.834,0 c 0.659,0 1.199,-0.54 1.199,-1.199 l 0,-1.879 c 0,-0.659 -0.54,-1.199 -1.199,-1.199 l -6.834,0 c -0.659,0 -1.199,0.54 -1.199,1.199 l 0,1.879 c -0.001,0.659 0.539,1.199 1.199,1.199 z"
+           id="path5"
+           style="fill:#9c0000;fill-opacity:1"
+           inkscape:connector-curvature="0" />
+        <path
+           d="m 32,13.971 c -5.797,0 -11.049,2.369 -14.846,6.188 l 4.554,3.288 c 2.745,-2.479 6.368,-4.003 10.35,-4.003 8.533,0 15.475,6.942 15.475,15.475 0,8.533 -6.941,15.475 -15.475,15.475 -8.534,0 -15.475,-6.941 -15.475,-15.475 0,-3.775 1.362,-7.235 3.617,-9.924 l -3.42,-4.423 c -3.539,3.753 -5.726,8.794 -5.726,14.347 0,11.551 9.396,20.948 20.946,20.948 11.55,0 20.946,-9.397 20.946,-20.948 C 52.946,23.368 43.55,13.971 32,13.971 Z"
+           id="path7"
+           style="fill:#9c0000;fill-opacity:1"
+           inkscape:connector-curvature="0" />
+        <path
+           d="m 32.158,38.364 c -1.06,0 -1.994,-0.508 -2.602,-1.283 L 29.55,37.089 21.981,27.3 c -1.609,2.122 -2.575,4.756 -2.575,7.618 0,6.976 5.675,12.65 12.651,12.65 6.976,0 12.65,-5.675 12.65,-12.65 0,-6.975 -5.675,-12.651 -12.65,-12.651 -3.037,0 -5.827,1.077 -8.01,2.868 l 9.818,7.088 -0.006,0.008 c 0.961,0.578 1.609,1.621 1.609,2.824 10e-4,1.827 -1.48,3.309 -3.31,3.309 z"
+           id="path9"
+           style="fill:#9c0000;fill-opacity:1"
+           inkscape:connector-curvature="0" />
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:70px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#fafafa;fill-opacity:1;stroke:#fafafa;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;"
+       x="107.375"
+       y="625.09998"
+       id="text4227"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4229"
+         x="107.375"
+         y="625.09998"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;font-family:Hind;-inkscape-font-specification:'Hind Bold';fill:#fafafa;stroke:#fafafa;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1;">Redmine</tspan><tspan
+         sodipodi:role="line"
+         x="107.375"
+         y="687.59998"
+         id="tspan4231"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;font-family:Hind;-inkscape-font-specification:'Hind Bold';fill:#fafafa;stroke:#fafafa;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1;">Work Tracker</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:70px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="106.875"
+       y="624.59998"
+       id="text4227-5"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4229-2"
+         x="106.875"
+         y="624.59998"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;font-family:Hind;-inkscape-font-specification:'Hind Bold';stroke:#000000;stroke-opacity:1">Redmine</tspan><tspan
+         sodipodi:role="line"
+         x="106.875"
+         y="687.09998"
+         id="tspan4231-6"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;font-family:Hind;-inkscape-font-specification:'Hind Bold';stroke:#000000;stroke-opacity:1">Work Tracker</tspan></text>
+  </g>
+</svg>
