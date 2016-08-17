@@ -9,7 +9,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
         || !data.options.workReminderEnabled) {
 
       chrome.tabs.create({
-        "url": chrome.extension.getURL("options.html"),
+        "url": chrome.extension.getURL("view/options.html"),
       });
     }
   });
