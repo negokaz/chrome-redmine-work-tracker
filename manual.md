@@ -1,4 +1,4 @@
-# ![icon](icon/Stopclock_32.png) Redmine Work Tracker
+# ![icon](src/icon/Stopclock_32.png) Redmine Work Tracker
 
 Redmine Work Tracker は Redmine で簡単に精度の高い作業時間の記録ができるようになる Chrome の拡張機能です
 

@@ -1,4 +1,4 @@
-# ![icon](icon/Stopclock_32.png) Redmine Work Tracker
+# ![icon](src/icon/Stopclock_32.png) Redmine Work Tracker
 
 Redmine Work Tracker is a Chrome extension to track your work for Redmine.
 
