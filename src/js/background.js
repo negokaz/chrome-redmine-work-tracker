@@ -24,15 +24,15 @@ chrome.storage.local.get(function(data) {
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (options && options.redmineRootUrl && changeInfo.status === "complete") {
       if (tab.url.match(new RegExp("^" + options.redmineRootUrl + ".*"))) {
-        chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
+        chrome.tabs.executeScript(tabId, {file: 'bower_components/jquery/dist/jquery.js'});
         chrome.tabs.executeScript(tabId, {file: 'js/inject-to-redmine.js'});
       }
       if (tab.url.match(new RegExp("^" + options.redmineRootUrl + "issues/[0-9]+"))) {
-        chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
+        chrome.tabs.executeScript(tabId, {file: 'bower_components/jquery/dist/jquery.js'});
         chrome.tabs.executeScript(tabId, {file: 'js/inject-to-issue.js'});
       }
       if (tab.url.match(new RegExp("^" + options.redmineRootUrl + ".*agile/board"))) {
-        chrome.tabs.executeScript(tabId, {file: 'js/jquery.js'});
+        chrome.tabs.executeScript(tabId, {file: 'bower_components/jquery/dist/jquery.js'});
         chrome.tabs.executeScript(tabId, {file: 'js/inject-to-agileboard.js'});
       }
     }
