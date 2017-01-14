@@ -13,6 +13,14 @@
 
   <style>
 
+    :host {
+      font-size: 1rem;
+    }
+
+    .element {
+      padding: 0.5rem;
+    }
+
     a {
       color: var(--primary-text-color);
       text-decoration: none;
@@ -22,24 +30,13 @@
       cursor: pointer;
     }
 
-    paper-tooltip /deep/ #tooltip {
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-
     .dropdown-content paper-item {
       cursor: pointer;
       font-size: 0.5em;
       min-height: 0;
     }
-
     .dropdown-content paper-item:hover {
       background-color: var(--divider-color);
-    }
-
-    paper-item-body {
-      min-width: 300px;
-      padding: 10px 0;
     }
 
     paper-toast > paper-button {
@@ -51,63 +48,61 @@
       color: var(--secondary-text-color);
     }
 
-    #issue-box {
-      margin: 10px;
-    }
-
-    #issue-box > #issueId {
+    #issueId {
       color: var(--secondary-text-color);
     }
 
     #timer-box {
-      display: inline-flex;
-      @apply(--layout-horizontal);
-      @apply(--layout-justified);
-      @apply(--layout-center);
-      padding: 5px 10px 10px 10px;
       border-top: solid 1px var(--divider-color);
     }
 
-    #timer-box > paper-icon-button {
+    #timer-box paper-icon-button {
       color: var(--primary-text-color);
     }
-
   </style>
 
   <template>
-    <paper-item fullbreed>
-      <paper-item-body hidden$="{{!isNoTask(status)}}">
+      <paper-material class="view-main" hidden$="{{!isNoTask(status)}}">
         <div>No task</div>
-      </paper-item-body>
-      <paper-item-body hidden$="{{isNoTask(status)}}" two-line>
-        <div id="issue-box">
-          <span id="issueId">#<span>{{issueId}}</span></span>
-          <a href="{{resolveIssueLinkUrl(options, issueId)}}" target="_blank">
-            <span id="issueName">{{redmine.issue.subject}}</span>
-          </a>
+      </paper-material>
+
+      <paper-material class="view-main" hidden$="{{isNoTask(status)}}">
+        <div id="issue-box" class="layout horizontal">
+          <div class="element">
+            <span id="issueId">#<span>{{issueId}}</span></span>
+          </div>
+          <div class="element">
+            <a href="{{resolveIssueLinkUrl(options, issueId)}}" target="_blank">
+              <span id="issueName">{{redmine.issue.subject}}</span>
+            </a>
+          </div>
         </div>
-        <div id="timer-box" secondary>
-          <span id="spend-time">{{formatSpendMillisec(spendMillisec)}}</span>
-          <paper-icon-button id="resume-btn" icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
-          <paper-tooltip for="resume-btn" margin-top="0">再開</paper-tooltip>
-          <paper-icon-button id="pause-btn" icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
-          <paper-tooltip for="pause-btn" margin-top="0">一時停止</paper-tooltip>
-          <paper-icon-button id="stop-btn" icon="av:stop" on-click="stopTimer"></paper-icon-button>
-          <paper-tooltip for="stop-btn" margin-top="0">停止(作業時間を記録)</paper-tooltip>
-          <paper-menu-button id="rewind-menu" vertical-align="bottom">
-            <paper-icon-button id="rewind-btn" icon="restore" class="dropdown-trigger"></paper-icon-button>
-            <div class="dropdown-content">
-              <paper-item on-click="rewindTimerHalfHour">30分</paper-item>
-              <paper-item on-click="rewindTimerOneHour">1時間</paper-item>
-              <paper-item on-click="resetTimer">リセット</paper-item>
-            </div>
-          </paper-menu-button>
-          <paper-tooltip for="rewind-btn" margin-top="0">時間を戻す</paper-tooltip>
-          <paper-toast id="modify-toast" duration=2000>
-            <paper-button on-click="revertResetTimer">戻す</paper-button>
-          </paper-toast>
+        <div id="timer-box" class="layout horizontal center-justified">
+          <div class="element layout horizontal center">
+            <span id="spend-time">{{formatSpendMillisec(spendMillisec)}}</span>
+          </div>
+          <div class="element layout horizontal center">
+            <paper-icon-button id="resume-btn" icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
+            <paper-tooltip for="resume-btn" margin-top="0">再開</paper-tooltip>
+            <paper-icon-button id="pause-btn" icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
+            <paper-tooltip for="pause-btn" margin-top="0">一時停止</paper-tooltip>
+            <paper-icon-button id="stop-btn" icon="av:stop" on-click="stopTimer"></paper-icon-button>
+            <paper-tooltip for="stop-btn" margin-top="0">停止(作業時間を記録)</paper-tooltip>
+            <paper-menu-button id="rewind-menu" vertical-align="bottom">
+              <paper-icon-button id="rewind-btn" icon="restore" class="dropdown-trigger"></paper-icon-button>
+              <div class="dropdown-content">
+                <paper-item on-click="rewindTimerHalfHour">30分</paper-item>
+                <paper-item on-click="rewindTimerOneHour">1時間</paper-item>
+                <paper-item on-click="resetTimer">リセット</paper-item>
+              </div>
+            </paper-menu-button>
+            <paper-tooltip for="rewind-btn" margin-top="0">時間を戻す</paper-tooltip>
+            <paper-toast id="modify-toast" duration=2000>
+              <paper-button on-click="revertResetTimer">戻す</paper-button>
+            </paper-toast>
+          </div>
         </div>
-    </paper-item>
+    </paper-material>
     <iron-ajax
         auto$="{{!isNoTask(status)}}"
         url="{{resolveIssueJsonUrl(options, issueId)}}"
