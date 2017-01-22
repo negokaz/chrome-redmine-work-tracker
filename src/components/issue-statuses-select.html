@@ -50,7 +50,7 @@
       </paper-menu-button>
     </div>
     <iron-ajax
-        auto
+        id="ajax"
         url="{{_resolveIssueStatusesUrl(redmineRootUrl)}}"
         params={{_resolveApiParams(apiAccessKey)}}
         handle-as="json"
@@ -89,11 +89,18 @@
       },
 
       observers: [
+        "_updateStatuses(redmineRootUrl, apiAccessKey)",
         "_selected(selectedIndex)"
       ],
 
       ready: function() {
         this.selectedStatusName = this.empty;
+      },
+
+      _updateStatuses: function(url, apiKey) {
+        if (url && url !== "" && apiKey && apiKey !== "") {
+          this.$['ajax'].generateRequest();
+        }
       },
 
       _resolveIssueStatusesUrl: function(redmineRootUrl) {

@@ -24,8 +24,8 @@
       on-request="_startRequest"
       on-response="_validateApiAccessibility"
       last-response="{{redmineResponse}}"
-      on-error="_validateApiAccessibility"
-      last-error="{{redmineResponse}}"></iron-ajax>
+      on-error="_reportError"
+      last-error="{{redmineErrorResponse}}"></iron-ajax>
   </template>
 
   <script>
@@ -80,7 +80,6 @@
         }
       },
 
-
       _startRequest: function() {
         this.validated  = true;
         this.validating = true;
@@ -97,6 +96,12 @@
         } else {
           this._markInvalid();
         }
+        this.validating = false;
+      },
+
+      _reportError: function() {
+        console.error(this.redmineErrorResponse);
+        this._markInvalid();
         this.validating = false;
       },
 
