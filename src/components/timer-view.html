@@ -89,7 +89,7 @@
         </div>
         <div id="timer-box" class="layout horizontal center-justified">
           <div class="layout horizontal center">
-            <span id="spend-time">{{formatSpendMillisec(spendMillisec)}}</span>
+            <span id="spend-time">{{formatSpendMillisec(spendMillisec, remainingMillisec, options)}}</span>
           </div>
           <div class="layout horizontal center">
             <paper-icon-button id="resume-btn" icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
@@ -150,6 +150,11 @@
         spendMillisec: {
           type: Number,
           value: 0
+        },
+
+        remainingMillisec: {
+          type: Number,
+          value: null
         }
       },
 
@@ -166,6 +171,7 @@
               self.issueId = data.timer.issueId;
               self.status = data.timer.status;
               self.spendMillisec = data.timer.spendMillisec;
+              self.remainingMillisec = data.timer.remainingMillisec;
             }
             setTimeout(tickTimer, 1000);
           });
@@ -182,9 +188,15 @@
         });
       },
 
-      formatSpendMillisec: function(spendMillisec) {
-        var date = new Date(spendMillisec);
-        return ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2) + ":" + ('0' + date.getUTCSeconds()).slice(-2);
+      formatSpendMillisec: function(spendMillisec, remainingMillisec, options) {
+        if (options.countdown && remainingMillisec) {
+          var remaining = remainingMillisec - spendMillisec;
+          var date = new Date(Math.abs(remaining));
+          return (remaining < 0 ? "-" : "") + ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2) + ":" + ('0' + date.getUTCSeconds()).slice(-2);
+        } else {
+          var date = new Date(spendMillisec);
+          return ('0' + date.getUTCHours()).slice(-2) + ":" + ('0' + date.getUTCMinutes()).slice(-2) + ":" + ('0' + date.getUTCSeconds()).slice(-2);
+        }
       },
 
       resolveIssueLinkUrl: function(options, issueId) {

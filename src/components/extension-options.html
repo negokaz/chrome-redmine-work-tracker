@@ -109,6 +109,11 @@
           api-access-key={{apiAccessKey}}
           selected-status-id="{{issueStatusId}}"
           empty="選択してください"></issue-statuses-select>
+        <h2>残り工数をトラッキング</h2>
+        <div>
+          <paper-toggle-button checked="{{countdown}}"></paper-toggle-button>
+          <span class="description">タスクに予定工数が設定されている場合、残り工数をカウントします</span>
+        </div>
         <h2>リマインダ</h2>
         <div>
           <paper-toggle-button checked="{{workReminderEnabled}}"></paper-toggle-button>
@@ -158,6 +163,7 @@
             self.userId = data.options.userId;
             self.issueStatusId = data.options.doingStatusId;
             self.workReminderEnabled = data.options.workReminderEnabled;
+            self.countdown = data.options.countdown;
           }
         });
       },
@@ -170,7 +176,8 @@
             apiAccessKey: self.apiAccessKey,
             userId: self.userId,
             doingStatusId: self.issueStatusId,
-            workReminderEnabled: self.workReminderEnabled
+            workReminderEnabled: self.workReminderEnabled,
+            countdown: self.countdown
           }
         }, function() {
           self.$['saved-toast'].show();
