@@ -11,228 +11,272 @@ var timer = {
     stopped: "stopped"
   },
 
+  _tickInterval: null,
+
+  _timerData: null,
+
+  _bihavior: null,
+
+  _startInterval: function() {
+    if (!this._tickInterval) {
+      this._tickInterval = setInterval(function() {
+        this._process({command: "tick"});
+      }.bind(this), 1000);
+    }
+  },
+
+  _stopInterval: function() {
+    if (this._tickInterval) {
+      clearInterval(this._tickInterval);
+      this._tickInterval = null;
+    }
+  },
+
+  _process: function(command) {
+
+    var newTimerData =
+      (this._behaviors[this._timerData.status][command.command] !== undefined)
+        ? (this._behaviors[this._timerData.status][command.command].bind(this))(this._timerData, command)
+        : (this._behaviors.unhandled[command.command].bind(this))(this._timerData, command);
+
+    return newTimerData.then(function(timerData) {
+      this._timerData = timerData;
+      this._changeBehavior(timerData);
+      return timerData;
+    }.bind(this)).then(function() {
+      return storage.set({ timer: this._timerData });
+    }.bind(this)).then(function() {
+      this._setBadge(this._timerData.spendMillisec);
+    }.bind(this));
+  },
+
+  _changeBehavior: function(timerData) {
+    this._bihavior = this._behaviors[timerData.status];
+    if (timerData.status == this.status.running) {
+      this._startInterval();
+    } else {
+      this._stopInterval();
+    }
+  },
+
+  _timerBeforeModify: null,
+
+  _behaviors: {
+
+    noTask: {
+
+      start: function(timerData, command) {
+        timerData.issueId = command.issueId;
+        timerData.status = this.status.running;
+        timerData.spendMillisec = 0;
+        timerData.latestTickTime = null;
+        return $.Deferred().resolve(timerData);
+      }
+    },
+
+    running: {
+
+      start: function(timerData, command) {
+        if (timerData.issueId == command.issueId) {
+          // do nothing
+          return $.Deferred().resolve(timerData);
+        } else {
+          // renew
+          return this._process({ command: 'stop' }).then(function() {
+            timerData.status = this.status.running;
+            timerData.issueId = command.issueId;
+            return timerData;
+          }.bind(this));
+        }
+      },
+
+      tick: function(timerData) {
+        if (timerData.latestTickTime) {
+          timerData.spendMillisec += (Date.now() - timerData.latestTickTime);
+        } else {
+          timerData.spendMillisec += 1000;
+        }
+        timerData.latestTickTime = Date.now();
+        return $.Deferred().resolve(timerData);
+      }
+    },
+
+    paused: {
+
+      start: function(timerData, command) {
+        if (timerData.issueId == command.issueId) {
+          // resume
+          timerData.status = this.status.running;
+          return $.Deferred().resolve(timerData);
+        } else {
+          // renew
+          return this._process({ command: "stop" }).then(function() {
+            timerData.status = this.status.running;
+            return timerData;
+          }.bind(this));
+        }
+      }
+    },
+
+    stopped: {
+
+      start: function(timerData, command) {
+        timerData.status = this.status.running;
+        timerData.spendMillisec = 0;
+        timerData.latestTickTime = null;
+        return $.Deferred().resolve(timerData);
+      }
+    },
+
+    unhandled: {
+
+      boot: function(timerData, command) {
+        return $.Deferred().resolve(timerData);
+      },
+
+      start: function(timerData, command) {
+        return $.Deferred().resolve(timerData);
+      },
+
+      tick: function(timerData) {
+        return $.Deferred().resolve(timerData);
+      },
+
+      stop: function(timerData, command) {
+        return this._postTimeToRedmine(timerData).then(function() {
+          timerData.status = this.status.stopped;
+          timerData.spendMillisec = 0;
+          timerData.latestTickTime = null;
+          return timerData;
+        }.bind(this));
+      },
+
+      pause: function(timerData, command) {
+        timerData.status = this.status.paused;
+        timerData.latestTickTime = null;
+        return $.Deferred().resolve(timerData);
+      },
+
+      resume: function(timerData) {
+        timerData.status = this.status.running;
+        return $.Deferred().resolve(timerData);
+      },
+
+      rewind: function(timerData, command) {
+        _timerBeforeModify = this._deepCopyObj(timerData);
+        var newSpendMillisec = timerData.spendMillisec - (new Date(0).setMinutes(command.minutes));
+        timerData.status = this.status.stopped;
+        timerData.spendMillisec = (newSpendMillisec > 0) ? newSpendMillisec : 0;
+        timerData.latestTickTime = null;
+        return $.Deferred().resolve(timerData);
+      },
+
+      reset: function(timerData, command) {
+        _timerBeforeModify = this._deepCopyObj(timerData);
+        timerData.status = this.status.stopped;
+        timerData.spendMillisec = 0;
+        timerData.latestTickTime = null;
+        return $.Deferred().resolve(timerData);
+      },
+
+      revertReset: function(timerData, command) {
+        timerData.status = this.status.stopped;
+        timerData.issueId = _timerBeforeModify.issueId;
+        timerData.spendMillisec = _timerBeforeModify.spendMillisec;
+        timerData.latestTickTime = null;
+        return $.Deferred().resolve(timerData);
+      }
+    }
+  },
+
   boot: function() {
-    var self = this;
     return storage.get()
       .then(function(data) {
         // インストール直後の起動
-        if (!data.timer) { return self.createTimerSchema(); }
-        // 2度目以降の起動
-        switch (data.timer.status) {
-          // カウント中にバックグラウンドの処理が落ちたときなどは
-          // タイマーを自動的に再開する
-          case 'running':
-            return self.onTimer(data.timer.issueId)
-              .then(function() { self.setBadge(data.timer.spendMillisec); });
-          default:
-            return new $.Deferred().resolve();
+        if (!data.timer) {
+          return this._createTimerSchema()
+            .then(function(data) {
+              this._timerData = data.timer;
+              this._changeBehavior(data.timer);
+              this._process({ command: "boot" });
+            });
+        } else {
+          // 2度目以降の起動
+          this._timerData = data.timer;
+          this._changeBehavior(data.timer);
+          return this._process({ command: "boot" });
         }
-      })
-      .promise();
+      }.bind(this));
   },
 
-  createTimerSchema: function(issueId) {
+  _createTimerSchema: function() {
     var self = this;
     return storage.set({
         'timer': {
           issueId: null,
           status: self.status.noTask,
-          spendMillisec: 0
+          spendMillisec: 0,
+          latestTickTime: 0
         }
-      })
-      .promise();
+      });
+  },
+
+  _deepCopyObj: function(data) {
+    var copied = {};
+    for (var prop in data) {
+      copied[prop] = data[prop];
+    }
+    return copied;
   },
 
   start: function(issueId) {
-    var self = this;
-    return storage.get()
-      .then(function(data) {
-        if (data.timer.issueId == issueId) {
-          switch (data.timer.status) {
-            case 'running':
-              return new $.Deferred().resolve();
-            case 'paused':
-              return self.resume();
-            case 'stopped':
-              return self.renew(issueId);
-          }
-        } else {
-          return self.renew(issueId);
-        }
-      })
-      .promise();
-  },
-
-  renew: function(issueId) {
-    var self = this;
-    return storage.get()
-      .then(function(data) {
-        // まだ保存できていない場合は保存してから
-        if (data.timer.status == self.status.running
-            || data.timer.status == self.status.paused) {
-          return self.stop();
-        }
-      })
-      .then(storage.get)
-      .then(function(data) {
-        data.timer.issueId = issueId;
-        data.timer.status = self.status.running;
-        data.timer.spendMillisec = 0;
-        return data;
-      })
-      .then(storage.set)
-      .then(function(data) {
-        return self.onTimer(data.timer.issueId);
-      })
-      .promise();
-  },
-
-  onTimer: function(issueId) {
-    var self = this;
-    var tickTimer = function() {
-      return storage.get()
-        .then(function(data) {
-          // タイマーがカウントしている状態ではなくなった
-          if (data.timer.issueId == issueId && data.timer.status != self.status.running) { return new $.Deferred().resolve(); }
-          // タスクが変わった
-          if (data.timer.issueId != issueId && data.timer.status == self.status.running) { return new $.Deferred().resolve(); }
-
-          // タイマーを進める
-          data.timer.spendMillisec += 1000;
-          return storage.set(data)
-            .then(function(data) {
-              self.setBadge(data.timer.spendMillisec);
-            })
-            .then(function() {
-              setTimeout(tickTimer, 1000);
-            });
-        });
-    };
-    return tickTimer().promise();
+    return this._process({ command: "start", issueId: issueId });
   },
 
   pause: function() {
-    var self = this;
-    return storage.get()
-      .then(function(data) {
-        data.timer.status = self.status.paused;
-        return data;
-      })
-      .then(storage.set)
-      .then(function() {
-        self.setBadge();
-      })
-      .promise();
-  },
-
-  resume: function() {
-    var self = this;
-    return storage.get()
-      .then(function(data) {
-        data.timer.status = self.status.running;
-        return data;
-      })
-      .then(storage.set)
-      .then(function(data) {
-        return self.onTimer(data.timer.issueId);
-      })
-      .promise();
+    return this._process({ command: "pause" });
   },
 
   stop: function() {
-    var self = this;
-    return self.postTime()
-      .then(storage.get)
-      .then(function(data) {
-        data.timer.status = self.status.stopped;
-        data.timer.spendMillisec = 0;
-        return data;
-      })
-      .then(storage.set)
-      .then(function() {
-        self.setBadge();
-      })
-      .promise();
+    return this._process({ command: "stop" });
   },
 
-  timerBeforeModify: null,
-
   rewind: function(minutes) {
-    var self = this;
-    return storage.get()
-      .then(function(data) {
-        timerBeforeModify = data.timer;
-        var newSpendMinutes = data.timer.spendMillisec - (new Date(0).setMinutes(minutes));
-        return storage.set({
-          'timer': {
-            issueId: data.timer.issueId,
-            status: self.status.stopped,
-            spendMillisec: (newSpendMinutes > 0) ? newSpendMinutes : 0
-          }
-        });
-      })
-      .then(function() {
-        self.setBadge();
-      })
-      .promise();
+    return this._process({ command: "rewind", minutes: minutes });
   },
 
   reset: function() {
-    var self = this;
-    return storage.get()
-      .then(function(data) {
-        timerBeforeModify = data.timer;
-        return storage.set({
-          'timer': {
-            issueId: data.timer.issueId,
-            status: self.status.stopped,
-            spendMillisec: 0
-          }
-        });
-      })
-      .then(function() {
-        self.setBadge();
-      })
-      .promise();
+    return this._process({ command: "reset" });
+  },
+
+  resume: function() {
+    return this._process({ command: "resume" });
   },
 
   revertReset: function() {
-    var self = this;
-    return storage.set({
-        'timer': {
-          issueId: timerBeforeModify.issueId,
-          status: self.status.stopped,
-          spendMillisec: timerBeforeModify.spendMillisec
-        }
-      })
-      .then(function() {
-        self.setBadge();
-      })
-      .promise();
+    return this._process({ command: "revertReset" });
   },
 
-  postTime: function(onSuccess) {
-    var self = this;
+  _postTimeToRedmine: function(timerData) {
     return storage.get()
       .then(function(data) {
         // 経過時間が0の場合は記録しない
-        if (data.timer.spendMillisec == 0) { return new $.Deferred().resolve(); }
+        if (timerData.spendMillisec == 0) { return new $.Deferred().resolve(); }
         // ミリ秒 を 時間(hour)に換算
-        var hours = data.timer.spendMillisec / (60 * 60 * 1000);
+        var hours = timerData.spendMillisec / (60 * 60 * 1000);
 
         return $.post(data.options.redmineRootUrl + "time_entries.json", {
           key: data.options.apiAccessKey,
           time_entry: {
-            issue_id: data.timer.issueId,
+            issue_id: timerData.issueId,
             hours: hours,
             comments: ""
           }
         });
-      })
-      .promise();
+      }.bind(this));
   },
 
-  setBadge: function(timeMillisec) {
+  _setBadge: function(timeMillisec) {
     if (timeMillisec) {
       var date = new Date(timeMillisec);
       var formatedSpendTime =
