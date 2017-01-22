@@ -21,6 +21,10 @@
       padding: 0.5rem;
     }
 
+    .element-parent {
+      padding: 0.25rem;
+    }
+
     a {
       color: var(--primary-text-color);
       text-decoration: none;
@@ -45,8 +49,8 @@
     }
 
     #spend-time {
-      min-width: 4.2rem;
-      text-align: center;
+      min-width: 5rem;
+      text-align: left;
       color: var(--secondary-text-color);
     }
 
@@ -73,7 +77,7 @@
       </paper-material>
 
       <paper-material class="view-main" hidden$="{{isNoTask(status)}}">
-        <div id="issue-box" class="layout horizontal">
+        <div id="issue-box" class="element-parent layout horizontal">
           <div class="element">
             <span id="issueId">#<span>{{issueId}}</span></span>
           </div>
@@ -84,10 +88,10 @@
           </div>
         </div>
         <div id="timer-box" class="layout horizontal center-justified">
-          <div class="element layout horizontal center">
+          <div class="layout horizontal center">
             <span id="spend-time">{{formatSpendMillisec(spendMillisec)}}</span>
           </div>
-          <div class="element layout horizontal center">
+          <div class="layout horizontal center">
             <paper-icon-button id="resume-btn" icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
             <paper-tooltip for="resume-btn" margin-top="0">再開</paper-tooltip>
             <paper-icon-button id="pause-btn" icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
