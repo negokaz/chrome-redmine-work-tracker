@@ -1,12 +1,13 @@
 chrome.runtime.onInstalled.addListener(function(details) {
   // オプションに設定されていない項目があればオプション画面を開く
   chrome.storage.local.get(function(data) {
-    if (!(data.options === undefined)
-        || !(data.options.redmineRootUrl === undefined)
-        || !(data.options.apiAccessKey === undefined)
-        || !(data.options.userId === undefined)
-        || !(data.options.doingStatusId === undefined)
-        || !(data.options.workReminderEnabled === undefined)) {
+    if (data.options === undefined
+        || data.options.redmineRootUrl === undefined
+        || data.options.apiAccessKey === undefined
+        || data.options.userId === undefined
+        || data.options.doingStatusId === undefined
+        || data.options.workReminderEnabled === undefined
+        || data.options.countdown === undefined) {
 
       chrome.tabs.create({
         "url": chrome.extension.getURL("view/options.html"),
