@@ -25,6 +25,11 @@
       padding: 0.25rem;
     }
 
+    .no-task {
+      width: 10rem;
+      text-align: center;
+    }
+
     a {
       color: var(--primary-text-color);
       text-decoration: none;
@@ -54,12 +59,16 @@
       color: var(--secondary-text-color);
     }
 
-    #issue-box {
-      min-width: 15rem;
-    }
-
     #issueId {
       color: var(--secondary-text-color);
+    }
+
+    #issue-box {
+      width: 20rem;
+    }
+
+    .issue-link {
+      word-wrap: break-word;
     }
 
     #timer-box {
@@ -69,11 +78,19 @@
     #timer-box paper-icon-button {
       color: var(--primary-text-color);
     }
+
+    .timer-controller {
+      margin: 0 0.5rem;
+    }
+
+    .timer-controller paper-icon-button {
+      margin: 0 0.5rem;
+    }
   </style>
 
   <template>
       <paper-material class="view-main" hidden$="{{!isNoTask(status)}}">
-        <div>No task</div>
+        <div class="no-task">No task</div>
       </paper-material>
 
       <paper-material class="view-main" hidden$="{{isNoTask(status)}}">
@@ -81,7 +98,7 @@
           <div class="element">
             <span id="issueId">#<span>{{issueId}}</span></span>
           </div>
-          <div class="element">
+          <div class="element issue-link">
             <a href="{{resolveIssueLinkUrl(options, issueId)}}" target="_blank">
               <span id="issueName">{{redmine.issue.subject}}</span>
             </a>
@@ -91,7 +108,7 @@
           <div class="layout horizontal center">
             <span id="spend-time">{{formatSpendMillisec(spendMillisec, remainingMillisec, options)}}</span>
           </div>
-          <div class="layout horizontal center">
+          <div class="timer-controller layout horizontal center">
             <paper-icon-button id="resume-btn" icon="av:play-arrow" on-click="resumeTimer" hidden$="{{isRunning(status)}}"></paper-icon-button>
             <paper-tooltip for="resume-btn" margin-top="0">再開</paper-tooltip>
             <paper-icon-button id="pause-btn" icon="av:pause" on-click="pauseTimer" hidden$="{{!isRunning(status)}}"></paper-icon-button>
