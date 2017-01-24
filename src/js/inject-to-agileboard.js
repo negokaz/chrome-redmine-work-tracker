@@ -1,7 +1,7 @@
 $(function() {
   'use strict';
 
-  if($(".redmine-timer-start").size() > 0) {
+  if($(".redmine-timer-start").length > 0) {
     // 既にボタンがある場合は以降の処理をしない
     return;
   }
