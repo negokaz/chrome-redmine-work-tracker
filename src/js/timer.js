@@ -90,7 +90,7 @@ var timer = {
           return $.Deferred().resolve(timerData);
         } else {
           // renew
-          return this._process({ command: 'stop' }).then(function() {
+          return this._process({ command: 'stop' }).then(function(timerData) {
             timerData.status = this.status.running;
             timerData.issueId = command.issueId;
             return timerData;
@@ -118,7 +118,8 @@ var timer = {
           return $.Deferred().resolve(timerData);
         } else {
           // renew
-          return this._process({ command: "stop" }).then(function() {
+          return this._process({ command: "stop" }).then(function(timerData) {
+            timerData.issueId = command.issueId;
             timerData.status = this.status.running;
             return timerData;
           }.bind(this));
@@ -129,6 +130,7 @@ var timer = {
     stopped: {
 
       start: function(timerData, command) {
+        timerData.issueId = command.issueId;
         timerData.status = this.status.running;
         timerData.spendMillisec = 0;
         timerData.latestTickTime = null;
